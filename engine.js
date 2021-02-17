@@ -1,11 +1,12 @@
-const WIDTH = 254
-const HEIGHT = 254
+const WIDTH = 96
+const HEIGHT = 80
 const FRAME_CAP = 30
 const TILE_SIZE = 16
 
 const canvas = document.getElementById("canvas")
 canvas.height = HEIGHT
 canvas.width = WIDTH
+resizeCanvas()
 const ctx = canvas.getContext("2d")
 
 const spriteSheet = document.getElementById("spritesheet")
@@ -31,7 +32,7 @@ mouseloc.hidden = !DEBUG
 const buttons = {}
 const buttonsJustPressed = {}
 const buttonHasUpped = {}
-let mousePos = { x: 0, y: 0 }
+let mouseData = { x: 0, y: 0, mouse1: false, xDiff: 0, yDiff: 0 }
 
 function start() {
     if (!spriteSheet.complete) {
@@ -58,7 +59,7 @@ function tick(delta) {
     let fram = 1000 / (delta - lastFrame)
     lastFrame = delta
     fps.innerHTML = "fps: " + fram
-    mouseloc.innerHTML = "mouse: " + mousePos.x + ", " + mousePos.y
+    mouseloc.innerHTML = "mouse: " + mouseData.x + ", " + mouseData.y
     frameTotal = Math.min(frameTotal - FPS, FPS)
     _update()
     for (const key in buttonsJustPressed) {
@@ -95,7 +96,7 @@ function camera(x = 0, y = 0) {
 }
 
 function mouse() {
-    return { x: mousePos.x, y: mousePos.y }
+    return { x: mouseData.x, y: mouseData.y, mouse1: mouseData.mouse1, xDiff: mouseData.xDiff, yDiff: mouseData.yDiff }
 }
 
 canvas.addEventListener('keydown', (event) => {
@@ -116,28 +117,34 @@ canvas.addEventListener('keyup', (event) => {
 }, false);
 
 canvas.addEventListener('mousedown', (event) => {
-    const keyName = 'mouse' + event.button.toString();
-
-    buttons[keyName] = true
-    if (buttonHasUpped[keyName] || buttonHasUpped[keyName] == undefined) {
-        buttonsJustPressed[keyName] = true
-        buttonHasUpped[keyName] = false
-    }
+    mouseData.mouse1 = true
 }, false);
 
 canvas.addEventListener('mouseup', (event) => {
-    const keyName = 'mouse' + event.button.toString();
-
-    buttons[keyName] = false
-    buttonHasUpped[keyName] = true
+    mouseData.mouse1 = false
 }, false);
 
 canvas.addEventListener('mousemove', (event) => {
-    const pos = { x: event.x, y: event.y }
-    pos.x = Math.floor((WIDTH / event.target.scrollWidth) * (event.x - event.target.offsetLeft))
-    pos.y = Math.floor((HEIGHT / event.target.scrollHeight) * (event.y - event.target.offsetTop))
 
-    mousePos = pos
+    let x = Math.floor((WIDTH / event.target.scrollWidth) * (event.x - event.target.offsetLeft))
+    let y = Math.floor((HEIGHT / event.target.scrollHeight) * (event.y - event.target.offsetTop))
+    const pos = { x: x, y: y, mouse1: event.buttons % 2 == 1, xDiff: x - mouseData.x, yDiff: y - mouseData.y }
+
+    mouseData = pos
 }, false)
 
 document.addEventListener('DOMContentLoaded', start, false);
+
+function resizeCanvas() {
+    let windowWidth = document.body.clientWidth
+    let windowHeight = document.body.clientHeight
+    if (windowHeight >= windowWidth) {
+        canvas.style.width = windowWidth.toString() + "px"
+        canvas.style.height = ""
+    } else {
+        canvas.style.height = windowHeight.toString() + "px"
+        canvas.style.width = ""
+    }
+}
+
+window.onresize = resizeCanvas
