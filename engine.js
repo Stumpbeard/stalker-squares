@@ -1,5 +1,5 @@
 const WIDTH = 96
-const HEIGHT = 80
+const HEIGHT = 80 * 2
 const FRAME_CAP = 30
 const TILE_SIZE = 16
 

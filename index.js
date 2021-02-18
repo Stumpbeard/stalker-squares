@@ -36,9 +36,11 @@ function _update() {
                 heldPiece.piece.targetX = heldPiece.piece.x
                 heldPiece.piece.y += m.y - heldPiece.lastY
                 heldPiece.piece.targetY = heldPiece.piece.y
-                let swapPiece = board.pieces[y][x]
-                if (piecesColliding(heldPiece.piece, swapPiece)) {
-                    swapPieces(swapPiece, x, y)
+                if (y < board.pieces.length && x < board.pieces[0].length) {
+                    let swapPiece = board.pieces[y][x]
+                    if (piecesColliding(heldPiece.piece, swapPiece)) {
+                        swapPieces(swapPiece, x, y)
+                    }
                 }
             }
             heldPiece.lastX = m.x
@@ -319,7 +321,7 @@ function replacePieces(combos) {
             let piece = row[x]
             if (!piece) {
                 board.pieces[y][x] = newPiece(x * TILE_SIZE, y * TILE_SIZE)
-                board.pieces[y][x].y -= HEIGHT
+                board.pieces[y][x].y -= HEIGHT / 2
             }
         }
     }
