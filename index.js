@@ -48,7 +48,9 @@ function _update() {
         } else {
             if (States.pieceHeld) {
                 heldPiece.piece.x = heldPiece.origX * TILE_SIZE
+                heldPiece.piece.targetX = heldPiece.piece.x
                 heldPiece.piece.y = heldPiece.origY * TILE_SIZE
+                heldPiece.piece.targetY = heldPiece.piece.y
                 let combos = markMatchingPieces()
                 if (combos.length > 0) {
                     States.playerControl = false
