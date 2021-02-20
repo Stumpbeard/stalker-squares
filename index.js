@@ -399,7 +399,6 @@ function drawBunkerBar(x, y) {
 
 function drawHoldTimer() {
     if (heldPiece.piece) {
-        console.log(Math.floor(TILE_SIZE/(pieceHoldLimit*FRAME_CAP)*heldPiece.timer))
         rect(heldPiece.piece.x, heldPiece.piece.y + TILE_SIZE, heldPiece.piece.x + Math.floor(TILE_SIZE/(pieceHoldLimit*FRAME_CAP)*heldPiece.timer),heldPiece.piece.y + TILE_SIZE, "green")
     }
 }
