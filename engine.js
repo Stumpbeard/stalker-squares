@@ -147,4 +147,22 @@ function resizeCanvas() {
     }
 }
 
+function rectFill(x0, y0, x1, y1, color) {
+    if (color) {
+        ctx.fillStyle = color
+    }
+    ctx.fillRect(x0, y0, x1-x0, y1-y0)
+}
+
+function rect(x0, y0, x1, y1, color) {
+    ctx.translate(0.5, 0.5)
+
+    if (color) {
+        ctx.strokeStyle = color
+    }
+    ctx.strokeRect(x0, y0, x1-x0-1, y1-y0-1)
+
+    ctx.translate(-0.5,-0.5)
+}
+
 window.onresize = resizeCanvas

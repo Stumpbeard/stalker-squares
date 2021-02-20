@@ -7,6 +7,7 @@ const States = {
 }
 
 function _init() {
+    bunkerSpawnScore = 0
     board = newBoard(0, 0)
     heldPiece = {
         piece: undefined,
@@ -98,6 +99,8 @@ function _draw() {
     if (States.pieceHeld) {
         drawPiece(heldPiece.piece)
     }
+    rect(0,80,96,96,"red")
+    spr(0, 0, 80)
 }
 
 function newPiece(x, y) {
@@ -353,6 +356,7 @@ function removeComboPieces(combos) {
             let xCoord = Math.floor(piece.x / TILE_SIZE)
             let yCoord = Math.floor(piece.y / TILE_SIZE)
             board.pieces[yCoord][xCoord] = undefined
+            bunkerSpawnScore += 100
         }
     }
 }
