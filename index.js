@@ -8,6 +8,8 @@ const States = {
 
 function _init() {
     bunkerSpawnScore = 0
+    bunkerSpawnTarget = 10000
+    pieceHoldLimit = 2
     board = newBoard(0, 0)
     heldPiece = {
         piece: undefined,
@@ -15,6 +17,7 @@ function _init() {
         lastY: 0,
         origX: 0,
         origY: 0,
+        timer: pieceHoldLimit * FRAME_CAP,
     }
     verifyBoard(board)
     States.inited = true
@@ -24,7 +27,7 @@ function _init() {
 function _update() {
     if (States.playerControl) {
         let m = mouse()
-        if (m.mouse1) {
+        if (m.mouse1 && heldPiece.timer > 0) {
             let x = Math.floor(m.x / TILE_SIZE)
             let y = Math.floor(m.y / TILE_SIZE)
             if (!States.pieceHeld) {
@@ -32,16 +35,20 @@ function _update() {
                 heldPiece.origX = x
                 heldPiece.origY = y
                 States.pieceHeld = true
+                heldPiece.timer = pieceHoldLimit * FRAME_CAP
             } else {
-                heldPiece.piece.x += m.x - heldPiece.lastX
-                heldPiece.piece.targetX = heldPiece.piece.x
-                heldPiece.piece.y += m.y - heldPiece.lastY
-                heldPiece.piece.targetY = heldPiece.piece.y
-                if (y < board.pieces.length && x < board.pieces[0].length) {
-                    let swapPiece = board.pieces[y][x]
-                    if (piecesColliding(heldPiece.piece, swapPiece)) {
-                        swapPieces(swapPiece, x, y)
-                    }
+                heldPiece.timer = Math.max(0, heldPiece.timer - 1)
+                if (heldPiece.timer > 0) {
+                    heldPiece.piece.x += m.x - heldPiece.lastX
+                    heldPiece.piece.targetX = heldPiece.piece.x
+                    heldPiece.piece.y += m.y - heldPiece.lastY
+                    heldPiece.piece.targetY = heldPiece.piece.y
+                    if (y < board.pieces.length && x < board.pieces[0].length) {
+                        let swapPiece = board.pieces[y][x]
+                        if (piecesColliding(heldPiece.piece, swapPiece)) {
+                            swapPieces(swapPiece, x, y)
+                        }
+                    }    
                 }
             }
             heldPiece.lastX = m.x
@@ -61,6 +68,7 @@ function _update() {
             }
             States.pieceHeld = false
             heldPiece.piece = undefined
+            heldPiece.timer = pieceHoldLimit * FRAME_CAP
         }
     } else if (States.loweringCurrentPieces) {
         while (lowerCurrentPieces()) {}
@@ -99,8 +107,8 @@ function _draw() {
     if (States.pieceHeld) {
         drawPiece(heldPiece.piece)
     }
-    rect(0,80,96,96,"red")
-    spr(0, 0, 80)
+    drawBunkerBar(0, 80)
+    drawHoldTimer()
 }
 
 function newPiece(x, y) {
@@ -127,6 +135,9 @@ function newBoard(x, y) {
         }
         pieces.push(row)
     }
+    let stalkerX = Math.floor(Math.random() * pieces[0].length)
+    let stalkerY = Math.floor(Math.random() * pieces.length)
+    pieces[stalkerY][stalkerX].color = 0
     return {
         x: x,
         y: y,
@@ -351,12 +362,12 @@ function movePiecesTowardsTarget() {
 function removeComboPieces(combos) {
     for (let i = 0; i < combos.length; ++i) {
         let curCombo = combos[i]
+        bunkerSpawnScore += (curCombo.length - 2) * 100 * curCombo.length
         for (let j = 0; j < curCombo.length; ++j) {
             let piece = curCombo[j]
             let xCoord = Math.floor(piece.x / TILE_SIZE)
             let yCoord = Math.floor(piece.y / TILE_SIZE)
             board.pieces[yCoord][xCoord] = undefined
-            bunkerSpawnScore += 100
         }
     }
 }
@@ -379,4 +390,16 @@ function lowerCurrentPieces() {
     }
 
     return loweredPiece
+}
+
+function drawBunkerBar(x, y) {
+    rect(x, y, x+96, y+16, "gray")
+    rectFill(x+1, y+1, x+1+Math.floor((95-1)/bunkerSpawnTarget*bunkerSpawnScore), y+16-1, "red")
+}
+
+function drawHoldTimer() {
+    if (heldPiece.piece) {
+        console.log(Math.floor(TILE_SIZE/(pieceHoldLimit*FRAME_CAP)*heldPiece.timer))
+        rect(heldPiece.piece.x, heldPiece.piece.y + TILE_SIZE, heldPiece.piece.x + Math.floor(TILE_SIZE/(pieceHoldLimit*FRAME_CAP)*heldPiece.timer),heldPiece.piece.y + TILE_SIZE, "green")
+    }
 }
