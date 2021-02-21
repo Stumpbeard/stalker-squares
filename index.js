@@ -8,7 +8,7 @@ const States = {
 
 function _init() {
     bunkerSpawnScore = 0
-    bunkerSpawnTarget = 10000
+    bunkerSpawnTarget = 1000
     pieceHoldLimit = 2
     board = newBoard(0, 0)
     heldPiece = {
@@ -94,6 +94,7 @@ function _update() {
                 removeComboPieces(combos)
                 States.loweringCurrentPieces = true
             } else {
+                checkWinState()
                 States.playerControl = true
                 States.spawningNewPieces = false
             }
@@ -236,7 +237,7 @@ function markMatchingPieces() {
         let comboCount = 0
         for (let x = 0; x < row.length; ++x) {
             let piece = row[x]
-            if (piece && piece.color === curColor) {
+            if (piece && piece.color !== 7 && piece.color === curColor) {
                 comboCount += 1
             } else {
                 if (comboCount >= 3) {
@@ -271,7 +272,7 @@ function markMatchingPieces() {
         let comboCount = 0
         for (let y = 0; y < board.pieces.length; ++y) {
             let piece = board.pieces[y][x]
-            if (piece && piece.color === curColor) {
+            if (piece && piece.color !== 7 && piece.color === curColor) {
                 comboCount += 1
             } else {
                 if (comboCount >= 3) {
@@ -330,16 +331,36 @@ function markMatchingPieces() {
     return combos
 }
 
-function replacePieces(combos) {
+function replacePieces() {
+    let replacedPieces = []
     for (let y = 0; y < board.pieces.length; ++y) {
         let row = board.pieces[y]
         for (let x = 0; x < row.length; ++x) {
             let piece = row[x]
             if (!piece) {
-                board.pieces[y][x] = newPiece(x * TILE_SIZE, y * TILE_SIZE)
-                board.pieces[y][x].y -= HEIGHT / 2
+                replacedPieces.push([x,y, newPiece(x * TILE_SIZE, y * TILE_SIZE)])
+                replacedPieces[replacedPieces.length-1][2].y -= HEIGHT /2 
+                // board.pieces[y][x] = newPiece(x * TILE_SIZE, y * TILE_SIZE)
+                // board.pieces[y][x].y -= HEIGHT / 2
             }
         }
+    }
+
+    let newWalls = Math.floor(bunkerSpawnScore/bunkerSpawnTarget)
+    bunkerSpawnScore = bunkerSpawnScore % bunkerSpawnTarget
+
+    while (newWalls > 0) {
+        let roll = Math.floor(Math.random() * replacedPieces.length)
+        let piece = replacedPieces[roll][2]
+        if (piece.color !== 7) {
+            piece.color = 7
+            newWalls -= 1
+        }
+    }
+
+    for (let i = 0; i < replacedPieces.length; ++i) {
+        let p = replacedPieces[i]
+        board.pieces[p[1]][p[0]] = p[2]
     }
 }
 
@@ -362,12 +383,13 @@ function movePiecesTowardsTarget() {
 function removeComboPieces(combos) {
     for (let i = 0; i < combos.length; ++i) {
         let curCombo = combos[i]
-        bunkerSpawnScore += (curCombo.length - 2) * 100 * curCombo.length
+        let perPieceBonus = (curCombo.length - 2) * 100
         for (let j = 0; j < curCombo.length; ++j) {
             let piece = curCombo[j]
             let xCoord = Math.floor(piece.x / TILE_SIZE)
             let yCoord = Math.floor(piece.y / TILE_SIZE)
             board.pieces[yCoord][xCoord] = undefined
+            bunkerSpawnScore += perPieceBonus
         }
     }
 }
@@ -400,5 +422,17 @@ function drawBunkerBar(x, y) {
 function drawHoldTimer() {
     if (heldPiece.piece) {
         rect(heldPiece.piece.x, heldPiece.piece.y + TILE_SIZE, heldPiece.piece.x + Math.floor(TILE_SIZE/(pieceHoldLimit*FRAME_CAP)*heldPiece.timer),heldPiece.piece.y + TILE_SIZE, "green")
+    }
+}
+
+function checkWinState() {
+    for (let y = 0; y < board.pieces.length; ++y) {
+        let row = board.pieces[y]
+        for (let x = 0; x < row.length; ++x) {
+            let piece = row[x]
+            if (piece && piece.color === 7) {
+                
+            }
+        }
     }
 }

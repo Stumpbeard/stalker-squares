@@ -1,12 +1,17 @@
+2 hours
 1. fix screen sizing
 2. draw board and verify no matches
 3. Fixing mouse controls
 4. draggable pieces
 
+2 hours
 1. piece swapping
 2. piece verifications
 3. piece shifting and replacing
 4. fixed bugs and adjusted window size
 
+1 hour
 1. implement rectangles
 2. player hold limit, scoring
+
+1. spawn walls on score
