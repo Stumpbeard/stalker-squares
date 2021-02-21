@@ -65,8 +65,7 @@ function _update() {
                     States.playerControl = false
                     removeComboPieces(combos)
                     States.loweringCurrentPieces = true
-                }
-                if (winStateExists()) {
+                } else if (winStateExists()) {
                     States.levelWon = true
                     States.playerControl = false
                 }
