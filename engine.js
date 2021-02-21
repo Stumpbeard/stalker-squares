@@ -9,6 +9,9 @@ canvas.width = WIDTH
 resizeCanvas()
 const ctx = canvas.getContext("2d")
 
+ctx.font = `${TILE_SIZE}px sans-serif`
+ctx.textBaseline = "top"
+
 const spriteSheet = document.getElementById("spritesheet")
 const SPRITES = []
 let previousTick = 0
@@ -163,6 +166,13 @@ function rect(x0, y0, x1, y1, color) {
     ctx.strokeRect(x0, y0, x1-x0-1, y1-y0-1)
 
     ctx.translate(-0.5,-0.5)
+}
+
+function print(text, x, y, color) {
+    if (color) {
+        ctx.fillStyle = color
+    }
+    ctx.fillText(text, x, y)
 }
 
 window.onresize = resizeCanvas
