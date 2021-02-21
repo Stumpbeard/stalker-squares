@@ -4,11 +4,12 @@ const States = {
     pieceHeld: false,
     loweringCurrentPieces: false,
     spawningNewPieces: false,
+    levelWon: false,
 }
 
 function _init() {
     bunkerSpawnScore = 0
-    bunkerSpawnTarget = 1000
+    bunkerSpawnTarget = 500
     pieceHoldLimit = 2
     board = newBoard(0, 0)
     heldPiece = {
@@ -65,6 +66,10 @@ function _update() {
                     removeComboPieces(combos)
                     States.loweringCurrentPieces = true
                 }
+                if (winStateExists()) {
+                    States.levelWon = true
+                    States.playerControl = false
+                }
             }
             States.pieceHeld = false
             heldPiece.piece = undefined
@@ -94,9 +99,13 @@ function _update() {
                 removeComboPieces(combos)
                 States.loweringCurrentPieces = true
             } else {
-                checkWinState()
-                States.playerControl = true
                 States.spawningNewPieces = false
+                if (winStateExists()) {
+                    console.log("setting win state")
+                    States.levelWon = true
+                } else {
+                    States.playerControl = true
+                }
             }
         }
     }
@@ -425,14 +434,25 @@ function drawHoldTimer() {
     }
 }
 
-function checkWinState() {
-    for (let y = 0; y < board.pieces.length; ++y) {
+function winStateExists() {
+    for (let y = 0; y < board.pieces.length-2; ++y) {
         let row = board.pieces[y]
-        for (let x = 0; x < row.length; ++x) {
+        for (let x = 0; x < row.length-2; ++x) {
             let piece = row[x]
             if (piece && piece.color === 7) {
-                
+                if (board.pieces[y][x + 1].color === 7 &&
+                    board.pieces[y][x + 2].color === 7 &&
+                    board.pieces[y+1][x].color === 7 &&
+                    board.pieces[y+1][x+1].color === 0 &&
+                    board.pieces[y+1][x+2].color === 7 &&
+                    board.pieces[y+2][x].color === 7 &&
+                    board.pieces[y+2][x+1].color === 7 &&
+                    board.pieces[y+2][x+2].color === 7) {
+                        return true
+                }
             }
         }
     }
+
+    return false
 }
