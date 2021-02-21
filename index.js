@@ -5,12 +5,14 @@ const States = {
     loweringCurrentPieces: false,
     spawningNewPieces: false,
     levelWon: false,
+    levelLost: false,
 }
 
 function _init() {
     bunkerSpawnScore = 0
-    bunkerSpawnTarget = 500
+    bunkerSpawnTarget = 2000
     pieceHoldLimit = 2
+    blowoutCounter = 15
     board = newBoard(0, 0)
     heldPiece = {
         piece: undefined,
@@ -56,6 +58,7 @@ function _update() {
             heldPiece.lastY = m.y
         } else {
             if (States.pieceHeld) {
+                blowoutCounter -= 1
                 heldPiece.piece.x = heldPiece.origX * TILE_SIZE
                 heldPiece.piece.targetX = heldPiece.piece.x
                 heldPiece.piece.y = heldPiece.origY * TILE_SIZE
@@ -67,6 +70,9 @@ function _update() {
                     States.loweringCurrentPieces = true
                 } else if (winStateExists()) {
                     States.levelWon = true
+                    States.playerControl = false
+                } else if (blowoutCounter <= 0) {
+                    States.levelLost = true
                     States.playerControl = false
                 }
             }
@@ -102,7 +108,9 @@ function _update() {
                 if (winStateExists()) {
                     console.log("setting win state")
                     States.levelWon = true
-                } else {
+                } else if (blowoutCounter <= 0) {
+                    States.levelLost = true
+                } else{
                     States.playerControl = true
                 }
             }
@@ -117,6 +125,16 @@ function _draw() {
         drawPiece(heldPiece.piece)
     }
     drawBunkerBar(0, 80)
+    if (!States.levelLost) {
+        print(`Blowout: ${blowoutCounter}`, 4, 100, "white")
+    } else {
+        rectFill(4, 100, 92, 156, "red")
+        print("LOSE", 4, 100, "white")
+    }
+    if (States.levelWon) {
+        rectFill(4, 100, 92, 156, "green")
+        print("WIN", 4, 100, "white")
+    }
     drawHoldTimer()
 }
 
