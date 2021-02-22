@@ -10,7 +10,7 @@ body {
     background: #000;
     flex: 0 0 auto;
     font-smooth: never;
-    -webkit-font-smoothing : none;
+    -webkit-font-smoothing: none;
 }
 
 #debug-text {

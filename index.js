@@ -53,7 +53,7 @@ function _update() {
                         if (piecesColliding(heldPiece.piece, swapPiece)) {
                             swapPieces(swapPiece, x, y)
                         }
-                    }    
+                    }
                 }
             }
             heldPiece.lastX = m.x
@@ -120,7 +120,7 @@ function _update() {
                     States.levelWon = true
                 } else if (blowoutCounter <= 0) {
                     States.levelLost = true
-                } else{
+                } else {
                     States.playerControl = true
                 }
             }
@@ -381,12 +381,12 @@ function replacePieces() {
                 let createdPiece = newPiece(x * TILE_SIZE, y * TILE_SIZE)
                 createdPiece.y -= HEIGHT / 2
                 tryForBandit(createdPiece)
-                replacedPieces.push([x,y, createdPiece])
+                replacedPieces.push([x, y, createdPiece])
             }
         }
     }
 
-    let newWalls = Math.floor(bunkerSpawnScore/bunkerSpawnTarget)
+    let newWalls = Math.floor(bunkerSpawnScore / bunkerSpawnTarget)
     bunkerSpawnScore = bunkerSpawnScore % bunkerSpawnTarget
 
     while (newWalls > 0) {
@@ -456,31 +456,31 @@ function lowerCurrentPieces() {
 }
 
 function drawBunkerBar(x, y) {
-    rect(x, y, x+96, y+16, "gray")
-    rectFill(x+1, y+1, x+1+Math.floor((95-1)/bunkerSpawnTarget*bunkerSpawnScore), y+16-1, "red")
+    rect(x, y, x + 96, y + 16, "gray")
+    rectFill(x + 1, y + 1, x + 1 + Math.floor((95 - 1) / bunkerSpawnTarget * bunkerSpawnScore), y + 16 - 1, "red")
 }
 
 function drawHoldTimer() {
     if (heldPiece.piece) {
-        rect(heldPiece.piece.x, heldPiece.piece.y + TILE_SIZE, heldPiece.piece.x + Math.floor(TILE_SIZE/(pieceHoldLimit*FRAME_CAP)*heldPiece.timer),heldPiece.piece.y + TILE_SIZE, "green")
+        rect(heldPiece.piece.x, heldPiece.piece.y + TILE_SIZE, heldPiece.piece.x + Math.floor(TILE_SIZE / (pieceHoldLimit * FRAME_CAP) * heldPiece.timer), heldPiece.piece.y + TILE_SIZE, "green")
     }
 }
 
 function winStateExists() {
-    for (let y = 0; y < board.pieces.length-2; ++y) {
+    for (let y = 0; y < board.pieces.length - 2; ++y) {
         let row = board.pieces[y]
-        for (let x = 0; x < row.length-2; ++x) {
+        for (let x = 0; x < row.length - 2; ++x) {
             let piece = row[x]
             if (piece && piece.color === 7) {
                 if (board.pieces[y][x + 1].color === 7 &&
                     board.pieces[y][x + 2].color === 7 &&
-                    board.pieces[y+1][x].color === 7 &&
-                    board.pieces[y+1][x+1].color === 0 &&
-                    board.pieces[y+1][x+2].color === 7 &&
-                    board.pieces[y+2][x].color === 7 &&
-                    board.pieces[y+2][x+1].color === 7 &&
-                    board.pieces[y+2][x+2].color === 7) {
-                        return true
+                    board.pieces[y + 1][x].color === 7 &&
+                    board.pieces[y + 1][x + 1].color === 0 &&
+                    board.pieces[y + 1][x + 2].color === 7 &&
+                    board.pieces[y + 2][x].color === 7 &&
+                    board.pieces[y + 2][x + 1].color === 7 &&
+                    board.pieces[y + 2][x + 2].color === 7) {
+                    return true
                 }
             }
         }
