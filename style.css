@@ -1,30 +1,30 @@
 html,
 body {
-    background: #333;
-    height: 100%;
-    width: 100%;
-    margin: 0;
+  background: #333;
+  height: 100%;
+  width: 100%;
+  margin: 0;
 }
 
 #canvas {
-    background: #000;
-    flex: 0 0 auto;
-    font-smooth: never;
-    -webkit-font-smoothing: none;
+  background: #000;
+  flex: 0 0 auto;
+  font-smooth: never;
+  -webkit-font-smoothing: none;
 }
 
 #debug-text {
-    position: absolute;
-    top: 0;
-    left: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 #container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 100%;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: pixelated;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: pixelated;
 }
