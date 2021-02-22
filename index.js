@@ -6,6 +6,7 @@ const States = {
     spawningNewPieces: false,
     levelWon: false,
     levelLost: false,
+    levelLostShot: false,
 }
 
 function _init() {
@@ -13,6 +14,7 @@ function _init() {
     bunkerSpawnTarget = 2000
     pieceHoldLimit = 2
     blowoutCounter = 15
+    wallPieces = 0
     board = newBoard(0, 0)
     heldPiece = {
         piece: undefined,
@@ -75,6 +77,14 @@ function _update() {
                     States.levelLost = true
                     States.playerControl = false
                 }
+
+                if (combos.length === 0) {
+                    let shots = checkBanditShots()
+                    if (shots) {
+                        States.levelLostShot = true
+                        States.playerControl = false
+                    }
+                }
             }
             States.pieceHeld = false
             heldPiece.piece = undefined
@@ -134,6 +144,10 @@ function _draw() {
     if (States.levelWon) {
         rectFill(4, 100, 92, 156, "green")
         print("WIN", 4, 100, "white")
+    }
+    if (States.levelLostShot) {
+        rectFill(4, 100, 92, 156, "red")
+        print("YOU GOT SHOT", 4, 100, "white")
     }
     drawHoldTimer()
 }
@@ -364,10 +378,10 @@ function replacePieces() {
         for (let x = 0; x < row.length; ++x) {
             let piece = row[x]
             if (!piece) {
-                replacedPieces.push([x,y, newPiece(x * TILE_SIZE, y * TILE_SIZE)])
-                replacedPieces[replacedPieces.length-1][2].y -= HEIGHT /2 
-                // board.pieces[y][x] = newPiece(x * TILE_SIZE, y * TILE_SIZE)
-                // board.pieces[y][x].y -= HEIGHT / 2
+                let createdPiece = newPiece(x * TILE_SIZE, y * TILE_SIZE)
+                createdPiece.y -= HEIGHT / 2
+                tryForBandit(createdPiece)
+                replacedPieces.push([x,y, createdPiece])
             }
         }
     }
@@ -381,6 +395,7 @@ function replacePieces() {
         if (piece.color !== 7) {
             piece.color = 7
             newWalls -= 1
+            wallPieces += 1
         }
     }
 
@@ -472,4 +487,55 @@ function winStateExists() {
     }
 
     return false
+}
+
+function tryForBandit(piece) {
+    const chance = 16 - wallPieces
+    const roll = Math.floor(Math.random() * chance)
+    if (roll === 0) {
+        piece.color = 8
+    }
+}
+
+function checkBanditShots() {
+    for (let y = 0; y < board.pieces.length; ++y) {
+        let row = board.pieces[y]
+        for (let x = 0; x < row.length; ++x) {
+            let piece = row[x]
+            if (piece && piece.color === 8) {
+                for (let i = y; i >= 0; --i) {
+                    let target = board.pieces[i][x]
+                    if (target !== piece && target && (target.color === 7 || target.color === 8)) {
+                        break
+                    } else if (target && target.color === 0) {
+                        return true
+                    }
+                }
+                for (let i = y; i < board.pieces.length; ++i) {
+                    let target = board.pieces[i][x]
+                    if (target !== piece && target && (target.color === 7 || target.color === 8)) {
+                        break
+                    } else if (target && target.color === 0) {
+                        return true
+                    }
+                }
+                for (let i = x; i >= 0; --i) {
+                    let target = board.pieces[y][i]
+                    if (target !== piece && target && (target.color === 7 || target.color === 8)) {
+                        break
+                    } else if (target && target.color === 0) {
+                        return true
+                    }
+                }
+                for (let i = x; i < board.pieces[y].length; ++i) {
+                    let target = board.pieces[y][i]
+                    if (target !== piece && target && (target.color === 7 || target.color === 8)) {
+                        break
+                    } else if (target && target.color === 0) {
+                        return true
+                    }
+                }
+            }
+        }
+    }
 }

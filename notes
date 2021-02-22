@@ -17,3 +17,4 @@
 1. spawn walls on score
 2. add win state
 3. added lose state, implemented print engine command
+4. added bandits, bandit lose state
