@@ -14,7 +14,10 @@
 1. implement rectangles
 2. player hold limit, scoring
 
+2 hours
 1. spawn walls on score
 2. add win state
 3. added lose state, implemented print engine command
 4. added bandits, bandit lose state
+
+1. Work on smoothness of movement controls
