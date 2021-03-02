@@ -203,6 +203,10 @@ function rectFill(x0, y0, x1, y1, color) {
 }
 
 function rect(x0, y0, x1, y1, color) {
+  if (x0 <= x1 && x1 - x0 - 1 < 0) {
+    return;
+  }
+
   ctx.translate(0.5, 0.5);
 
   if (color) {

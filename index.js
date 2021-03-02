@@ -488,7 +488,7 @@ function drawBunkerBar(x, y) {
 }
 
 function drawHoldTimer() {
-  if (heldPiece.piece) {
+  if (heldPiece.piece && heldPiece.firstSwitch) {
     rect(
       heldPiece.piece.x,
       heldPiece.piece.y + TILE_SIZE,
