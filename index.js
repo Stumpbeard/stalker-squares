@@ -31,6 +31,7 @@ function _init() {
   verifyBoard(board);
   States.inited = true;
   States.playerControl = true;
+  scoreFloaties = [];
 }
 
 function _update() {
@@ -337,6 +338,9 @@ function removeComboPieces(combos) {
       let yCoord = Math.floor(piece.y / TILE_SIZE);
       board.pieces[yCoord][xCoord] = undefined;
       bunkerSpawnScore += perPieceBonus;
+      scoreFloaties.push(
+        newScoreFloaty(piece.x + board.x, piece.y + board.y, perPieceBonus)
+      );
     }
   }
 }
@@ -369,6 +373,13 @@ function drawBunkerBar(x, y) {
     x + 1 + Math.floor(((95 - 1) / bunkerSpawnTarget) * bunkerSpawnScore),
     y + 16 - 1,
     "red"
+  );
+  print(
+    `${bunkerSpawnScore} / ${bunkerSpawnTarget}`,
+    x + 8,
+    y + 4,
+    "white",
+    10
   );
 }
 
@@ -621,6 +632,7 @@ function gameUpdate() {
       }
     }
   }
+  updateScoreFloaties();
 }
 
 function drawGame() {
@@ -643,6 +655,7 @@ function drawGame() {
     rectFill(4, 100, 92, 156, "red");
     print("YOU GOT SHOT", 4, 100, "white");
   }
+  drawScoreFloaties();
   drawHoldTimer();
 }
 
@@ -697,5 +710,33 @@ function tutorialUpdate() {
   if (mouse().mouse1) {
     States.tutorialScreen = false;
     States.gameScreen = true;
+  }
+}
+
+function newScoreFloaty(x, y, val) {
+  return {
+    x: x,
+    y: y,
+    val: val,
+    timer: FRAME_CAP,
+  };
+}
+
+function drawScoreFloaties() {
+  for (let i = 0; i < scoreFloaties.length; ++i) {
+    let floaty = scoreFloaties[i];
+    if (floaty.timer > 0) {
+      print(floaty.val, floaty.x + 2, floaty.y + 4, "white", 8);
+      print(floaty.val, floaty.x + 2, floaty.y + 4, "white", 8);
+    }
+  }
+}
+
+function updateScoreFloaties() {
+  for (let i = 0; i < scoreFloaties.length; ++i) {
+    let floaty = scoreFloaties[i];
+    if (floaty.timer > 0) {
+      floaty.timer -= 1;
+    }
   }
 }
