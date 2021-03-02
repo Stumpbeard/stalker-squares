@@ -427,7 +427,7 @@ function winStateExists() {
 function tryForBandit(piece) {
   const chance = 16 - wallPieces;
   const roll = Math.floor(Math.random() * chance);
-  if (roll === 0) {
+  if (roll < 8) {
     piece.color = 8;
   }
 }
@@ -527,7 +527,9 @@ function arePiecesColliding(piece1, piece2) {
 
 function updateGame() {
   if (States.playerControl) {
-    unfreshenPieces();
+    if (!heldPiece.piece) {
+      unfreshenPieces();
+    }
     let m = mouse();
     if (m.mouse1 && heldPiece.timer > 0) {
       let x = Math.floor(m.x / TILE_SIZE);
@@ -587,11 +589,7 @@ function updateGame() {
         }
 
         if (combos.length === 0) {
-          let shots = checkBanditShots();
-          if (shots) {
-            States.levelLostShot = true;
-            States.playerControl = false;
-          }
+          checkBanditLoseState();
         }
       }
       States.pieceHeld = false;
@@ -630,6 +628,7 @@ function updateGame() {
           States.levelLost = true;
         } else {
           States.playerControl = true;
+          checkBanditLoseState();
         }
       }
     }
@@ -655,7 +654,8 @@ function drawGame() {
   }
   if (States.levelLostShot) {
     rectFill(4, 100, 92, 156, "red");
-    print("YOU GOT SHOT", 4, 100, "white");
+    print("YOU GOT", 4, 100, "white");
+    print("SHOT", 4, 116, "white");
   }
   drawScoreFloaties();
   drawHoldTimer();
@@ -752,5 +752,13 @@ function unfreshenPieces() {
         piece.fresh = false;
       }
     }
+  }
+}
+
+function checkBanditLoseState() {
+  let shots = checkBanditShots();
+  if (shots) {
+    States.levelLostShot = true;
+    States.playerControl = false;
   }
 }
