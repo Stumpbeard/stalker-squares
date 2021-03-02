@@ -36,9 +36,9 @@ function _init() {
 
 function _update() {
   if (States.tutorialScreen) {
-    tutorialUpdate();
+    updateTutorial();
   } else if (States.gameScreen) {
-    gameUpdate();
+    updateGame();
   }
 }
 
@@ -58,6 +58,7 @@ function newPiece(x, y) {
     y: y,
     targetY: y,
     color: Math.floor(Math.random() * 6) + 1,
+    fresh: true,
   };
 }
 
@@ -524,7 +525,7 @@ function arePiecesColliding(piece1, piece2) {
   return isColliding(one, two);
 }
 
-function gameUpdate() {
+function updateGame() {
   if (States.playerControl) {
     let m = mouse();
     if (m.mouse1 && heldPiece.timer > 0) {
@@ -706,7 +707,7 @@ function drawTutorial() {
   spr(7, TILE_SIZE * 2 + 36, TILE_SIZE * 8 + 10);
 }
 
-function tutorialUpdate() {
+function updateTutorial() {
   if (mouse().mouse1) {
     States.tutorialScreen = false;
     States.gameScreen = true;
