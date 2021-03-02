@@ -12,6 +12,7 @@ const States = {
 };
 
 function _init() {
+  deathShot = undefined;
   tutorialMan = {
     x: TILE_SIZE * 3,
     y: 0,
@@ -28,7 +29,7 @@ function _init() {
   bunkerSpawnScore = 0;
   bunkerSpawnTarget = 2000;
   pieceHoldLimit = 4;
-  blowoutCounter = 15;
+  blowoutCounter = 16;
   wallPieces = 0;
   board = newBoard(0, 0);
   heldPiece = {
@@ -460,6 +461,10 @@ function checkBanditShots() {
           ) {
             break;
           } else if (target && target.color === 0) {
+            deathShot = [
+              { x: piece.x + TILE_SIZE / 2, y: piece.y + TILE_SIZE / 2 },
+              { x: target.x + TILE_SIZE / 2, y: target.y + TILE_SIZE / 2 },
+            ];
             return true;
           }
         }
@@ -472,6 +477,10 @@ function checkBanditShots() {
           ) {
             break;
           } else if (target && target.color === 0) {
+            deathShot = [
+              { x: piece.x + TILE_SIZE / 2, y: piece.y + TILE_SIZE / 2 },
+              { x: target.x + TILE_SIZE / 2, y: target.y + TILE_SIZE / 2 },
+            ];
             return true;
           }
         }
@@ -484,6 +493,10 @@ function checkBanditShots() {
           ) {
             break;
           } else if (target && target.color === 0) {
+            deathShot = [
+              { x: piece.x + TILE_SIZE / 2, y: piece.y + TILE_SIZE / 2 },
+              { x: target.x + TILE_SIZE / 2, y: target.y + TILE_SIZE / 2 },
+            ];
             return true;
           }
         }
@@ -496,6 +509,10 @@ function checkBanditShots() {
           ) {
             break;
           } else if (target && target.color === 0) {
+            deathShot = [
+              { x: piece.x + TILE_SIZE / 2, y: piece.y + TILE_SIZE / 2 },
+              { x: target.x + TILE_SIZE / 2, y: target.y + TILE_SIZE / 2 },
+            ];
             return true;
           }
         }
