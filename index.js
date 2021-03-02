@@ -12,7 +12,7 @@ const States = {
 function _init() {
   bunkerSpawnScore = 0;
   bunkerSpawnTarget = 2000;
-  pieceHoldLimit = 2;
+  pieceHoldLimit = 4;
   blowoutCounter = 15;
   wallPieces = 0;
   board = newBoard(0, 0);
@@ -23,6 +23,8 @@ function _init() {
     origX: 0,
     origY: 0,
     timer: pieceHoldLimit * FRAME_CAP,
+    firstSwitch: false,
+    pieceDropped: true,
   };
   verifyBoard(board);
   States.inited = true;
@@ -35,14 +37,18 @@ function _update() {
     if (m.mouse1 && heldPiece.timer > 0) {
       let x = Math.floor(m.x / TILE_SIZE);
       let y = Math.floor(m.y / TILE_SIZE);
-      if (!States.pieceHeld) {
+      if (!States.pieceHeld && heldPiece.pieceDropped) {
         heldPiece.piece = board.pieces[y][x];
         heldPiece.origX = x;
         heldPiece.origY = y;
         States.pieceHeld = true;
         heldPiece.timer = pieceHoldLimit * FRAME_CAP;
-      } else {
-        heldPiece.timer = Math.max(0, heldPiece.timer - 1);
+        heldPiece.firstSwitch = false;
+        heldPiece.pieceDropped = false;
+      } else if (heldPiece.piece) {
+        if (heldPiece.firstSwitch) {
+          heldPiece.timer = Math.max(0, heldPiece.timer - 1);
+        }
         if (heldPiece.timer > 0) {
           heldPiece.piece.x += m.x - heldPiece.lastX;
           heldPiece.piece.targetX = heldPiece.piece.x;
@@ -50,7 +56,11 @@ function _update() {
           heldPiece.piece.targetY = heldPiece.piece.y;
           if (y < board.pieces.length && x < board.pieces[0].length) {
             let swapPiece = board.pieces[y][x];
-            if (piecesColliding(heldPiece.piece, swapPiece)) {
+            if (
+              swapPiece !== heldPiece.piece &&
+              arePiecesColliding(heldPiece.piece, swapPiece)
+            ) {
+              heldPiece.firstSwitch = true;
               swapPieces(swapPiece, x, y);
             }
           }
@@ -59,6 +69,9 @@ function _update() {
       heldPiece.lastX = m.x;
       heldPiece.lastY = m.y;
     } else {
+      if (!heldPiece.pieceDropped && !m.mouse1) {
+        heldPiece.pieceDropped = true;
+      }
       if (States.pieceHeld) {
         blowoutCounter -= 1;
         heldPiece.piece.x = heldPiece.origX * TILE_SIZE;
@@ -579,4 +592,38 @@ function checkBanditShots() {
       }
     }
   }
+}
+
+function isColliding(one, two) {
+  let rect1 = { x: one.x, y: one.y, width: one.w, height: one.h };
+  let rect2 = { x: two.x, y: two.y, width: two.w, height: two.h };
+
+  if (
+    rect1.x < rect2.x + rect2.width &&
+    rect1.x + rect1.width > rect2.x &&
+    rect1.y < rect2.y + rect2.height &&
+    rect1.y + rect1.height > rect2.y
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+function arePiecesColliding(piece1, piece2) {
+  let one = {
+    x: piece1.x + TILE_SIZE / 4,
+    y: piece1.y + TILE_SIZE / 4,
+    w: TILE_SIZE / 2,
+    h: TILE_SIZE / 2,
+  };
+
+  let two = {
+    x: piece2.x + TILE_SIZE / 4,
+    y: piece2.y + TILE_SIZE / 4,
+    w: TILE_SIZE / 2,
+    h: TILE_SIZE / 2,
+  };
+
+  return isColliding(one, two);
 }
