@@ -427,7 +427,7 @@ function winStateExists() {
 function tryForBandit(piece) {
   const chance = 16 - wallPieces;
   const roll = Math.floor(Math.random() * chance);
-  if (roll < 8) {
+  if (roll === 0) {
     piece.color = 8;
   }
 }
@@ -570,7 +570,9 @@ function updateGame() {
         heldPiece.pieceDropped = true;
       }
       if (States.pieceHeld) {
-        blowoutCounter -= 1;
+        if (heldPiece.firstSwitch) {
+          blowoutCounter -= 1;
+        }
         heldPiece.piece.x = heldPiece.origX * TILE_SIZE;
         heldPiece.piece.targetX = heldPiece.piece.x;
         heldPiece.piece.y = heldPiece.origY * TILE_SIZE;
@@ -588,7 +590,7 @@ function updateGame() {
           States.playerControl = false;
         }
 
-        if (combos.length === 0) {
+        if (combos.length === 0 && heldPiece.firstSwitch) {
           checkBanditLoseState();
         }
       }
