@@ -437,7 +437,7 @@ function checkBanditShots() {
     let row = board.pieces[y];
     for (let x = 0; x < row.length; ++x) {
       let piece = row[x];
-      if (piece && piece.color === 8) {
+      if (piece && piece.color === 8 && !piece.fresh) {
         for (let i = y; i >= 0; --i) {
           let target = board.pieces[i][x];
           if (
@@ -527,6 +527,7 @@ function arePiecesColliding(piece1, piece2) {
 
 function updateGame() {
   if (States.playerControl) {
+    unfreshenPieces();
     let m = mouse();
     if (m.mouse1 && heldPiece.timer > 0) {
       let x = Math.floor(m.x / TILE_SIZE);
@@ -738,6 +739,18 @@ function updateScoreFloaties() {
     let floaty = scoreFloaties[i];
     if (floaty.timer > 0) {
       floaty.timer -= 1;
+    }
+  }
+}
+
+function unfreshenPieces() {
+  for (let y = 0; y < board.pieces.length; ++y) {
+    let row = board.pieces[y];
+    for (let x = 0; x < row.length; ++x) {
+      let piece = row[x];
+      if (piece) {
+        piece.fresh = false;
+      }
     }
   }
 }
