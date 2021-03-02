@@ -754,6 +754,9 @@ function drawTutorial() {
   spr(7, TILE_SIZE * 2 + 4, TILE_SIZE * 8 + 10 + shiftY);
   spr(7, TILE_SIZE * 2 + 20, TILE_SIZE * 8 + 10 + shiftY);
   spr(7, TILE_SIZE * 2 + 36, TILE_SIZE * 8 + 10 + shiftY);
+
+  rect(TILE_SIZE * 5, 0, TILE_SIZE * 6, TILE_SIZE, "red");
+  line(TILE_SIZE * 5, 8, TILE_SIZE * 6, 8, "blue");
 }
 
 function updateTutorial() {

@@ -202,19 +202,76 @@ function rectFill(x0, y0, x1, y1, color) {
   ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
 }
 
-function rect(x0, y0, x1, y1, color) {
-  if (x0 <= x1 && x1 - x0 - 1 < 0) {
-    return;
-  }
-
-  ctx.translate(0.5, 0.5);
-
+function rect(x, y, xx, yy, color) {
   if (color) {
     ctx.strokeStyle = color;
   }
-  ctx.strokeRect(x0, y0, x1 - x0 - 1, y1 - y0 - 1);
+  let x0, x1, y0, y1;
+  if (x <= xx) {
+    x0 = x;
+    x1 = xx;
+  } else {
+    x0 = xx;
+    x1 = x;
+  }
 
-  ctx.translate(-0.5, -0.5);
+  if (y <= yy) {
+    y0 = y;
+    y1 = yy;
+  } else {
+    y0 = yy;
+    y1 = y;
+  }
+
+  line(x0, y0, x0, y1 - 1);
+  line(x0, y0, x1 - 1, y0);
+  line(x1 - 1, y0, x1 - 1, y1 - 1);
+  line(x0, y1 - 1, x1 - 1, y1 - 1);
+}
+
+function line(x0, y0, x1, y1, color) {
+  if (color) {
+    ctx.strokeStyle = color;
+  }
+
+  bresenhamLine(x0, y0, x1, y1);
+}
+
+function bresenhamLine(x, y, xx, yy) {
+  var oldFill = ctx.fillStyle; // save old fill style
+  ctx.fillStyle = ctx.strokeStyle; // move stroke style to fill
+  xx = Math.floor(xx);
+  yy = Math.floor(yy);
+  x = Math.floor(x);
+  y = Math.floor(y);
+  // BRENSENHAM
+  var dx = Math.abs(xx - x);
+  var sx = x < xx ? 1 : -1;
+  var dy = -Math.abs(yy - y);
+  var sy = y < yy ? 1 : -1;
+  var err = dx + dy;
+  var errC; // error value
+  var end = false;
+  var x1 = x;
+  var y1 = y;
+
+  while (!end) {
+    ctx.fillRect(x1, y1, 1, 1); // draw each pixel as a rect
+    if (x1 === xx && y1 === yy) {
+      end = true;
+    } else {
+      errC = 2 * err;
+      if (errC >= dy) {
+        err += dy;
+        x1 += sx;
+      }
+      if (errC <= dx) {
+        err += dx;
+        y1 += sy;
+      }
+    }
+  }
+  ctx.fillStyle = oldFill; // restore old fill style
 }
 
 function print(text, x, y, color, fontSize) {
