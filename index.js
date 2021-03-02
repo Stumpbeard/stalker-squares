@@ -7,6 +7,8 @@ const States = {
   levelWon: false,
   levelLost: false,
   levelLostShot: false,
+  tutorialScreen: true,
+  gameScreen: false,
 };
 
 function _init() {
@@ -32,137 +34,18 @@ function _init() {
 }
 
 function _update() {
-  if (States.playerControl) {
-    let m = mouse();
-    if (m.mouse1 && heldPiece.timer > 0) {
-      let x = Math.floor(m.x / TILE_SIZE);
-      let y = Math.floor(m.y / TILE_SIZE);
-      if (!States.pieceHeld && heldPiece.pieceDropped) {
-        heldPiece.piece = board.pieces[y][x];
-        heldPiece.origX = x;
-        heldPiece.origY = y;
-        States.pieceHeld = true;
-        heldPiece.timer = pieceHoldLimit * FRAME_CAP;
-        heldPiece.firstSwitch = false;
-        heldPiece.pieceDropped = false;
-      } else if (heldPiece.piece) {
-        if (heldPiece.firstSwitch) {
-          heldPiece.timer = Math.max(0, heldPiece.timer - 1);
-        }
-        if (heldPiece.timer > 0) {
-          heldPiece.piece.x += m.x - heldPiece.lastX;
-          heldPiece.piece.targetX = heldPiece.piece.x;
-          heldPiece.piece.y += m.y - heldPiece.lastY;
-          heldPiece.piece.targetY = heldPiece.piece.y;
-          if (y < board.pieces.length && x < board.pieces[0].length) {
-            let swapPiece = board.pieces[y][x];
-            if (
-              swapPiece !== heldPiece.piece &&
-              arePiecesColliding(heldPiece.piece, swapPiece)
-            ) {
-              heldPiece.firstSwitch = true;
-              swapPieces(swapPiece, x, y);
-            }
-          }
-        }
-      }
-      heldPiece.lastX = m.x;
-      heldPiece.lastY = m.y;
-    } else {
-      if (!heldPiece.pieceDropped && !m.mouse1) {
-        heldPiece.pieceDropped = true;
-      }
-      if (States.pieceHeld) {
-        blowoutCounter -= 1;
-        heldPiece.piece.x = heldPiece.origX * TILE_SIZE;
-        heldPiece.piece.targetX = heldPiece.piece.x;
-        heldPiece.piece.y = heldPiece.origY * TILE_SIZE;
-        heldPiece.piece.targetY = heldPiece.piece.y;
-        let combos = markMatchingPieces();
-        if (combos.length > 0) {
-          States.playerControl = false;
-          removeComboPieces(combos);
-          States.loweringCurrentPieces = true;
-        } else if (winStateExists()) {
-          States.levelWon = true;
-          States.playerControl = false;
-        } else if (blowoutCounter <= 0) {
-          States.levelLost = true;
-          States.playerControl = false;
-        }
-
-        if (combos.length === 0) {
-          let shots = checkBanditShots();
-          if (shots) {
-            States.levelLostShot = true;
-            States.playerControl = false;
-          }
-        }
-      }
-      States.pieceHeld = false;
-      heldPiece.piece = undefined;
-      heldPiece.timer = pieceHoldLimit * FRAME_CAP;
-    }
-  } else if (States.loweringCurrentPieces) {
-    while (lowerCurrentPieces()) {}
-    let movedPieces = movePiecesTowardsTarget();
-    if (!movedPieces) {
-      let combos = markMatchingPieces();
-      if (combos.length > 0) {
-        States.playerControl = false;
-        removeComboPieces(combos);
-        States.loweringCurrentPieces = true;
-      } else {
-        States.loweringCurrentPieces = false;
-        States.spawningNewPieces = true;
-      }
-    }
-  } else if (States.spawningNewPieces) {
-    replacePieces();
-    let movedPieces = movePiecesTowardsTarget();
-    if (!movedPieces) {
-      let combos = markMatchingPieces();
-      if (combos.length > 0) {
-        States.playerControl = false;
-        removeComboPieces(combos);
-        States.loweringCurrentPieces = true;
-      } else {
-        States.spawningNewPieces = false;
-        if (winStateExists()) {
-          console.log("setting win state");
-          States.levelWon = true;
-        } else if (blowoutCounter <= 0) {
-          States.levelLost = true;
-        } else {
-          States.playerControl = true;
-        }
-      }
-    }
+  if (States.gameScreen) {
+    gameUpdate();
   }
 }
 
 function _draw() {
   cls();
-  drawBoard(board);
-  if (States.pieceHeld) {
-    drawPiece(heldPiece.piece);
+  if (States.tutorialScreen) {
+    drawTutorial();
+  } else if (States.gameScreen) {
+    drawGame();
   }
-  drawBunkerBar(0, 80);
-  if (!States.levelLost) {
-    print(`Blowout: ${blowoutCounter}`, 4, 100, "white");
-  } else {
-    rectFill(4, 100, 92, 156, "red");
-    print("LOSE", 4, 100, "white");
-  }
-  if (States.levelWon) {
-    rectFill(4, 100, 92, 156, "green");
-    print("WIN", 4, 100, "white");
-  }
-  if (States.levelLostShot) {
-    rectFill(4, 100, 92, 156, "red");
-    print("YOU GOT SHOT", 4, 100, "white");
-  }
-  drawHoldTimer();
 }
 
 function newPiece(x, y) {
@@ -626,4 +509,184 @@ function arePiecesColliding(piece1, piece2) {
   };
 
   return isColliding(one, two);
+}
+
+function gameUpdate() {
+  if (States.playerControl) {
+    let m = mouse();
+    if (m.mouse1 && heldPiece.timer > 0) {
+      let x = Math.floor(m.x / TILE_SIZE);
+      let y = Math.floor(m.y / TILE_SIZE);
+      if (!States.pieceHeld && heldPiece.pieceDropped) {
+        heldPiece.piece = board.pieces[y][x];
+        heldPiece.origX = x;
+        heldPiece.origY = y;
+        States.pieceHeld = true;
+        heldPiece.timer = pieceHoldLimit * FRAME_CAP;
+        heldPiece.firstSwitch = false;
+        heldPiece.pieceDropped = false;
+      } else if (heldPiece.piece) {
+        if (heldPiece.firstSwitch) {
+          heldPiece.timer = Math.max(0, heldPiece.timer - 1);
+        }
+        if (heldPiece.timer > 0) {
+          heldPiece.piece.x += m.x - heldPiece.lastX;
+          heldPiece.piece.targetX = heldPiece.piece.x;
+          heldPiece.piece.y += m.y - heldPiece.lastY;
+          heldPiece.piece.targetY = heldPiece.piece.y;
+          if (y < board.pieces.length && x < board.pieces[0].length) {
+            let swapPiece = board.pieces[y][x];
+            if (
+              swapPiece !== heldPiece.piece &&
+              arePiecesColliding(heldPiece.piece, swapPiece)
+            ) {
+              heldPiece.firstSwitch = true;
+              swapPieces(swapPiece, x, y);
+            }
+          }
+        }
+      }
+      heldPiece.lastX = m.x;
+      heldPiece.lastY = m.y;
+    } else {
+      if (!heldPiece.pieceDropped && !m.mouse1) {
+        heldPiece.pieceDropped = true;
+      }
+      if (States.pieceHeld) {
+        blowoutCounter -= 1;
+        heldPiece.piece.x = heldPiece.origX * TILE_SIZE;
+        heldPiece.piece.targetX = heldPiece.piece.x;
+        heldPiece.piece.y = heldPiece.origY * TILE_SIZE;
+        heldPiece.piece.targetY = heldPiece.piece.y;
+        let combos = markMatchingPieces();
+        if (combos.length > 0) {
+          States.playerControl = false;
+          removeComboPieces(combos);
+          States.loweringCurrentPieces = true;
+        } else if (winStateExists()) {
+          States.levelWon = true;
+          States.playerControl = false;
+        } else if (blowoutCounter <= 0) {
+          States.levelLost = true;
+          States.playerControl = false;
+        }
+
+        if (combos.length === 0) {
+          let shots = checkBanditShots();
+          if (shots) {
+            States.levelLostShot = true;
+            States.playerControl = false;
+          }
+        }
+      }
+      States.pieceHeld = false;
+      heldPiece.piece = undefined;
+      heldPiece.timer = pieceHoldLimit * FRAME_CAP;
+    }
+  } else if (States.loweringCurrentPieces) {
+    while (lowerCurrentPieces()) {}
+    let movedPieces = movePiecesTowardsTarget();
+    if (!movedPieces) {
+      let combos = markMatchingPieces();
+      if (combos.length > 0) {
+        States.playerControl = false;
+        removeComboPieces(combos);
+        States.loweringCurrentPieces = true;
+      } else {
+        States.loweringCurrentPieces = false;
+        States.spawningNewPieces = true;
+      }
+    }
+  } else if (States.spawningNewPieces) {
+    replacePieces();
+    let movedPieces = movePiecesTowardsTarget();
+    if (!movedPieces) {
+      let combos = markMatchingPieces();
+      if (combos.length > 0) {
+        States.playerControl = false;
+        removeComboPieces(combos);
+        States.loweringCurrentPieces = true;
+      } else {
+        States.spawningNewPieces = false;
+        if (winStateExists()) {
+          console.log("setting win state");
+          States.levelWon = true;
+        } else if (blowoutCounter <= 0) {
+          States.levelLost = true;
+        } else {
+          States.playerControl = true;
+        }
+      }
+    }
+  }
+}
+
+function drawGame() {
+  drawBoard(board);
+  if (States.pieceHeld) {
+    drawPiece(heldPiece.piece);
+  }
+  drawBunkerBar(0, 80);
+  if (!States.levelLost) {
+    print(`Blowout: ${blowoutCounter}`, 4, 100, "white");
+  } else {
+    rectFill(4, 100, 92, 156, "red");
+    print("LOSE", 4, 100, "white");
+  }
+  if (States.levelWon) {
+    rectFill(4, 100, 92, 156, "green");
+    print("WIN", 4, 100, "white");
+  }
+  if (States.levelLostShot) {
+    rectFill(4, 100, 92, 156, "red");
+    print("YOU GOT SHOT", 4, 100, "white");
+  }
+  drawHoldTimer();
+}
+
+function drawTutorial() {
+  print("match 3 or more for", 0, 0, "white", 10);
+  print("combos", 0, 10, "white", 10);
+  let offset = {
+    x: TILE_SIZE * 2 + 8,
+    y: TILE_SIZE - 8,
+  };
+  spr(1, 0 + offset.x, 0 + offset.y);
+  spr(2, TILE_SIZE + offset.x, 0 + offset.y);
+  spr(3, TILE_SIZE * 2 + offset.x, 0 + offset.y);
+  spr(1, TILE_SIZE * 3 + offset.x, 0 + offset.y);
+  spr(4, 0 + offset.x, TILE_SIZE + offset.y);
+  spr(4, TILE_SIZE + offset.x, TILE_SIZE + offset.y);
+  spr(4, TILE_SIZE * 2 + offset.x, TILE_SIZE + offset.y);
+  spr(2, TILE_SIZE * 3 + offset.x, TILE_SIZE + offset.y);
+
+  print("fill bar for bunker", 0, TILE_SIZE * 2 + 8, "white", 10);
+  bunkerSpawnScore = bunkerSpawnTarget * 0.8;
+  drawBunkerBar(0, TILE_SIZE * 2 + 18);
+  print("=", TILE_SIZE * 4, TILE_SIZE * 2 + 26, "white");
+  spr(7, TILE_SIZE * 4 + 10, TILE_SIZE * 2 + 26);
+  bunkerSpawnScore = 0;
+
+  print("avoid bandits", 0, TILE_SIZE * 4 + 8, "white", 10);
+  spr(8, 0, TILE_SIZE * 5);
+  spr(2, TILE_SIZE * 1, TILE_SIZE * 5);
+  spr(1, TILE_SIZE * 2, TILE_SIZE * 5);
+  spr(5, TILE_SIZE * 3, TILE_SIZE * 5);
+  spr(6, TILE_SIZE * 4, TILE_SIZE * 5);
+  spr(0, TILE_SIZE * 5, TILE_SIZE * 5);
+  rect(8, TILE_SIZE * 5 + 8, TILE_SIZE * 5 + 8, TILE_SIZE * 5 + 9, "red");
+  print("X", WIDTH / 2 - 8 + 2, TILE_SIZE * 5 + 2, "red");
+
+  print("encase man in", 0, TILE_SIZE * 6, "white", 10);
+  print("bunker!", 0, TILE_SIZE * 6 + 10, "white", 10);
+  print("WIN!", 0, TILE_SIZE * 6 + 30, "white", 10);
+  spr(7, TILE_SIZE * 2 + 4, TILE_SIZE * 6 + 10);
+  spr(7, TILE_SIZE * 2 + 20, TILE_SIZE * 6 + 10);
+  spr(7, TILE_SIZE * 2 + 36, TILE_SIZE * 6 + 10);
+  spr(7, TILE_SIZE * 2 + 4, TILE_SIZE * 7 + 10);
+  spr(0, TILE_SIZE * 2 + 20, TILE_SIZE * 7 + 10);
+  spr(7, TILE_SIZE * 2 + 36, TILE_SIZE * 7 + 10);
+  spr(7, TILE_SIZE * 2 + 4, TILE_SIZE * 8 + 10);
+  spr(7, TILE_SIZE * 2 + 20, TILE_SIZE * 8 + 10);
+  spr(7, TILE_SIZE * 2 + 36, TILE_SIZE * 8 + 10);
 }

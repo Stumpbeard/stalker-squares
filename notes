@@ -1,5 +1,6 @@
 known bugs:
 can move mouse out of bounds and very quickly to switch non adjacent pieces
+shot text goes off screen
 
 2 hours
 1. fix screen sizing
@@ -24,3 +25,4 @@ can move mouse out of bounds and very quickly to switch non adjacent pieces
 4. added bandits, bandit lose state
 
 1. Work on smoothness of movement controls
+2. add tutorial screen

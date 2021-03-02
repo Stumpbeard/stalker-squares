@@ -217,7 +217,12 @@ function rect(x0, y0, x1, y1, color) {
   ctx.translate(-0.5, -0.5);
 }
 
-function print(text, x, y, color) {
+function print(text, x, y, color, fontSize) {
+  if (fontSize) {
+    ctx.font = `${fontSize}px sans-serif`;
+  } else {
+    ctx.font = `${TILE_SIZE}px sans-serif`;
+  }
   if (color) {
     ctx.fillStyle = color;
   }
