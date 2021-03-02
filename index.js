@@ -12,6 +12,19 @@ const States = {
 };
 
 function _init() {
+  tutorialMan = {
+    x: TILE_SIZE * 3,
+    y: 0,
+    spd: 1,
+  };
+  tutorialPiece1 = {
+    x: TILE_SIZE * 4,
+    y: 0,
+  };
+  tutorialPiece2 = {
+    x: TILE_SIZE * 5,
+    y: 0,
+  };
   bunkerSpawnScore = 0;
   bunkerSpawnTarget = 2000;
   pieceHoldLimit = 4;
@@ -534,7 +547,12 @@ function updateGame() {
     if (m.mouse1 && heldPiece.timer > 0) {
       let x = Math.floor(m.x / TILE_SIZE);
       let y = Math.floor(m.y / TILE_SIZE);
-      if (!States.pieceHeld && heldPiece.pieceDropped) {
+      let hoverPiece = board.pieces[y][x];
+      if (
+        !States.pieceHeld &&
+        heldPiece.pieceDropped &&
+        hoverPiece.color === 0
+      ) {
         heldPiece.piece = board.pieces[y][x];
         heldPiece.origX = x;
         heldPiece.origY = y;
@@ -664,53 +682,76 @@ function drawGame() {
 }
 
 function drawTutorial() {
-  print("match 3 or more for", 0, 0, "white", 10);
-  print("combos", 0, 10, "white", 10);
+  print("drag man", 0, 0, "white", 10);
+  spr(3, tutorialPiece2.x, tutorialPiece2.y);
+  spr(5, tutorialPiece1.x, tutorialPiece1.y);
+  spr(0, tutorialMan.x, tutorialMan.y);
+  let shiftY = TILE_SIZE;
+  print("match 3 or more for", 0, 0 + shiftY, "white", 10);
+  print("combos", 0, 10 + shiftY, "white", 10);
   let offset = {
     x: TILE_SIZE * 2 + 8,
     y: TILE_SIZE - 8,
   };
-  spr(1, 0 + offset.x, 0 + offset.y);
-  spr(2, TILE_SIZE + offset.x, 0 + offset.y);
-  spr(3, TILE_SIZE * 2 + offset.x, 0 + offset.y);
-  spr(1, TILE_SIZE * 3 + offset.x, 0 + offset.y);
-  spr(4, 0 + offset.x, TILE_SIZE + offset.y);
-  spr(4, TILE_SIZE + offset.x, TILE_SIZE + offset.y);
-  spr(4, TILE_SIZE * 2 + offset.x, TILE_SIZE + offset.y);
-  spr(2, TILE_SIZE * 3 + offset.x, TILE_SIZE + offset.y);
+  spr(1, 0 + offset.x, 0 + offset.y + shiftY);
+  spr(2, TILE_SIZE + offset.x, 0 + offset.y + shiftY);
+  spr(3, TILE_SIZE * 2 + offset.x, 0 + offset.y + shiftY);
+  spr(1, TILE_SIZE * 3 + offset.x, 0 + offset.y + shiftY);
+  spr(4, 0 + offset.x, TILE_SIZE + offset.y + shiftY);
+  spr(4, TILE_SIZE + offset.x, TILE_SIZE + offset.y + shiftY);
+  spr(4, TILE_SIZE * 2 + offset.x, TILE_SIZE + offset.y + shiftY);
+  spr(0, TILE_SIZE * 3 + offset.x, TILE_SIZE + offset.y + shiftY);
 
-  print("fill bar for bunker", 0, TILE_SIZE * 2 + 8, "white", 10);
+  print("fill bar for bunker", 0, TILE_SIZE * 2 + 8 + shiftY, "white", 10);
   bunkerSpawnScore = bunkerSpawnTarget * 0.8;
-  drawBunkerBar(0, TILE_SIZE * 2 + 18);
-  print("=", TILE_SIZE * 4, TILE_SIZE * 2 + 26, "white");
-  spr(7, TILE_SIZE * 4 + 10, TILE_SIZE * 2 + 26);
+  drawBunkerBar(0, TILE_SIZE * 2 + 18 + shiftY);
+  print("=", TILE_SIZE * 4, TILE_SIZE * 2 + 26 + shiftY, "white");
+  spr(7, TILE_SIZE * 4 + 10, TILE_SIZE * 2 + 26 + shiftY);
   bunkerSpawnScore = 0;
 
-  print("avoid bandits", 0, TILE_SIZE * 4 + 8, "white", 10);
-  spr(8, 0, TILE_SIZE * 5);
-  spr(2, TILE_SIZE * 1, TILE_SIZE * 5);
-  spr(1, TILE_SIZE * 2, TILE_SIZE * 5);
-  spr(5, TILE_SIZE * 3, TILE_SIZE * 5);
-  spr(6, TILE_SIZE * 4, TILE_SIZE * 5);
-  spr(0, TILE_SIZE * 5, TILE_SIZE * 5);
-  rect(8, TILE_SIZE * 5 + 8, TILE_SIZE * 5 + 8, TILE_SIZE * 5 + 9, "red");
-  print("X", WIDTH / 2 - 8 + 2, TILE_SIZE * 5 + 2, "red");
+  print("avoid bandits", 0, TILE_SIZE * 4 + 8 + shiftY, "white", 10);
+  spr(8, 0, TILE_SIZE * 5 + shiftY);
+  spr(2, TILE_SIZE * 1, TILE_SIZE * 5 + shiftY);
+  spr(1, TILE_SIZE * 2, TILE_SIZE * 5 + shiftY);
+  spr(5, TILE_SIZE * 3, TILE_SIZE * 5 + shiftY);
+  spr(6, TILE_SIZE * 4, TILE_SIZE * 5 + shiftY);
+  spr(0, TILE_SIZE * 5, TILE_SIZE * 5 + shiftY);
+  rect(
+    8,
+    TILE_SIZE * 5 + 8 + shiftY,
+    TILE_SIZE * 5 + 8,
+    TILE_SIZE * 5 + 9 + shiftY,
+    "red"
+  );
+  print("X", WIDTH / 2 - 8 + 2, TILE_SIZE * 5 + 2 + shiftY, "red");
 
-  print("encase man in", 0, TILE_SIZE * 6, "white", 10);
-  print("bunker!", 0, TILE_SIZE * 6 + 10, "white", 10);
-  print("WIN!", 0, TILE_SIZE * 6 + 30, "white", 10);
-  spr(7, TILE_SIZE * 2 + 4, TILE_SIZE * 6 + 10);
-  spr(7, TILE_SIZE * 2 + 20, TILE_SIZE * 6 + 10);
-  spr(7, TILE_SIZE * 2 + 36, TILE_SIZE * 6 + 10);
-  spr(7, TILE_SIZE * 2 + 4, TILE_SIZE * 7 + 10);
-  spr(0, TILE_SIZE * 2 + 20, TILE_SIZE * 7 + 10);
-  spr(7, TILE_SIZE * 2 + 36, TILE_SIZE * 7 + 10);
-  spr(7, TILE_SIZE * 2 + 4, TILE_SIZE * 8 + 10);
-  spr(7, TILE_SIZE * 2 + 20, TILE_SIZE * 8 + 10);
-  spr(7, TILE_SIZE * 2 + 36, TILE_SIZE * 8 + 10);
+  print("encase man in", 0, TILE_SIZE * 6 + shiftY, "white", 10);
+  print("bunker!", 0, TILE_SIZE * 6 + 10 + shiftY, "white", 10);
+  print("WIN!", 0, TILE_SIZE * 6 + 30 + shiftY, "white", 10);
+  spr(7, TILE_SIZE * 2 + 4, TILE_SIZE * 6 + 10 + shiftY);
+  spr(7, TILE_SIZE * 2 + 20, TILE_SIZE * 6 + 10 + shiftY);
+  spr(7, TILE_SIZE * 2 + 36, TILE_SIZE * 6 + 10 + shiftY);
+  spr(7, TILE_SIZE * 2 + 4, TILE_SIZE * 7 + 10 + shiftY);
+  spr(0, TILE_SIZE * 2 + 20, TILE_SIZE * 7 + 10 + shiftY);
+  spr(7, TILE_SIZE * 2 + 36, TILE_SIZE * 7 + 10 + shiftY);
+  spr(7, TILE_SIZE * 2 + 4, TILE_SIZE * 8 + 10 + shiftY);
+  spr(7, TILE_SIZE * 2 + 20, TILE_SIZE * 8 + 10 + shiftY);
+  spr(7, TILE_SIZE * 2 + 36, TILE_SIZE * 8 + 10 + shiftY);
 }
 
 function updateTutorial() {
+  tutorialMan.x += tutorialMan.spd;
+  if (tutorialMan.x === TILE_SIZE * 4 && tutorialMan.spd === 1) {
+    tutorialPiece1.x = TILE_SIZE * 3;
+  } else if (tutorialMan.x === TILE_SIZE * 5 && tutorialMan.spd === 1) {
+    tutorialPiece2.x = TILE_SIZE * 4;
+    tutorialMan.spd = -1;
+  } else if (tutorialMan.x === TILE_SIZE * 4 && tutorialMan.spd === -1) {
+    tutorialPiece2.x = TILE_SIZE * 5;
+  } else if (tutorialMan.x === TILE_SIZE * 3 && tutorialMan.spd === -1) {
+    tutorialPiece1.x = TILE_SIZE * 4;
+    tutorialMan.spd = 1;
+  }
   if (mouse().mouse1) {
     States.tutorialScreen = false;
     States.gameScreen = true;
