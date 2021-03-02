@@ -26,7 +26,7 @@ function _init() {
     origY: 0,
     timer: pieceHoldLimit * FRAME_CAP,
     firstSwitch: false,
-    pieceDropped: true,
+    pieceDropped: false,
   };
   verifyBoard(board);
   States.inited = true;
@@ -34,7 +34,9 @@ function _init() {
 }
 
 function _update() {
-  if (States.gameScreen) {
+  if (States.tutorialScreen) {
+    tutorialUpdate();
+  } else if (States.gameScreen) {
     gameUpdate();
   }
 }
@@ -689,4 +691,11 @@ function drawTutorial() {
   spr(7, TILE_SIZE * 2 + 4, TILE_SIZE * 8 + 10);
   spr(7, TILE_SIZE * 2 + 20, TILE_SIZE * 8 + 10);
   spr(7, TILE_SIZE * 2 + 36, TILE_SIZE * 8 + 10);
+}
+
+function tutorialUpdate() {
+  if (mouse().mouse1) {
+    States.tutorialScreen = false;
+    States.gameScreen = true;
+  }
 }
