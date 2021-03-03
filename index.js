@@ -13,6 +13,7 @@ const States = {
 
 const Colors = {
   darkRed: "#ac3232",
+  lightRed: "#d95763",
   lightGray: "#847e87",
   white: "#ffffff",
 };
@@ -395,13 +396,7 @@ function drawBunkerBar(x, y) {
     y + 16 - 1,
     Colors.darkRed
   );
-  print(
-    `${bunkerSpawnScore} / ${bunkerSpawnTarget}`,
-    x + 8,
-    y + 4,
-    Colors.white,
-    10
-  );
+  print(`${bunkerSpawnScore} / ${bunkerSpawnTarget}`, x, y + 4, Colors.white);
 }
 
 function drawHoldTimer() {
@@ -712,13 +707,14 @@ function drawGame() {
 }
 
 function drawTutorial() {
-  print("drag man", 0, 0, Colors.white, 10);
+  print("drag", 0, 0, Colors.white);
+  print("man", 0, 8, Colors.white);
   spr(3, tutorialPiece2.x, tutorialPiece2.y);
   spr(5, tutorialPiece1.x, tutorialPiece1.y);
   spr(0, tutorialMan.x, tutorialMan.y);
   let shiftY = TILE_SIZE;
-  print("match 3 or more for", 0, 0 + shiftY, Colors.white, 10);
-  print("combos", 0, 10 + shiftY, Colors.white, 10);
+  print("match", 0, 0 + shiftY + 8, Colors.white);
+  print("3+", 0, 10 + shiftY + 8, Colors.white);
   let offset = {
     x: TILE_SIZE * 2 + 8,
     y: TILE_SIZE - 8,
@@ -732,14 +728,14 @@ function drawTutorial() {
   spr(4, TILE_SIZE * 2 + offset.x, TILE_SIZE + offset.y + shiftY);
   spr(0, TILE_SIZE * 3 + offset.x, TILE_SIZE + offset.y + shiftY);
 
-  print("fill bar for bunker", 0, TILE_SIZE * 2 + 8 + shiftY, Colors.white, 10);
+  print("fill bar", 0, TILE_SIZE * 2 + 8 + shiftY, Colors.white);
   bunkerSpawnScore = bunkerSpawnTarget * 0.8;
   drawBunkerBar(0, TILE_SIZE * 2 + 18 + shiftY);
-  print("=", TILE_SIZE * 4, TILE_SIZE * 2 + 26 + shiftY, Colors.white);
+  print("=", TILE_SIZE * 4, TILE_SIZE * 2 + 32 + shiftY, Colors.white);
   spr(7, TILE_SIZE * 4 + 10, TILE_SIZE * 2 + 26 + shiftY);
   bunkerSpawnScore = 0;
 
-  print("avoid bandits", 0, TILE_SIZE * 4 + 8 + shiftY, Colors.white, 10);
+  print("avoid bandits", 0, TILE_SIZE * 4 + 8 + shiftY, Colors.white);
   spr(8, 0, TILE_SIZE * 5 + shiftY);
   spr(2, TILE_SIZE * 1, TILE_SIZE * 5 + shiftY);
   spr(1, TILE_SIZE * 2, TILE_SIZE * 5 + shiftY);
@@ -753,11 +749,10 @@ function drawTutorial() {
     TILE_SIZE * 5 + 9 + shiftY,
     Colors.darkRed
   );
-  print("X", WIDTH / 2 - 8 + 2, TILE_SIZE * 5 + 2 + shiftY, Colors.darkRed);
+  print("X", WIDTH / 2 - 8 + 4, TILE_SIZE * 5 + 2 + shiftY, Colors.lightRed);
 
-  print("encase man in", 0, TILE_SIZE * 6 + shiftY, Colors.white, 10);
-  print("bunker!", 0, TILE_SIZE * 6 + 10 + shiftY, Colors.white, 10);
-  print("WIN!", 0, TILE_SIZE * 6 + 30 + shiftY, Colors.white, 10);
+  print("encase man", 0, TILE_SIZE * 6 + shiftY, Colors.white);
+  print("WIN!", 0, TILE_SIZE * 6 + 30 + shiftY, Colors.white);
   spr(7, TILE_SIZE * 2 + 4, TILE_SIZE * 6 + 10 + shiftY);
   spr(7, TILE_SIZE * 2 + 20, TILE_SIZE * 6 + 10 + shiftY);
   spr(7, TILE_SIZE * 2 + 36, TILE_SIZE * 6 + 10 + shiftY);

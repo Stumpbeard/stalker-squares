@@ -8,6 +8,9 @@ canvas.height = HEIGHT;
 canvas.width = WIDTH;
 resizeCanvas();
 const ctx = canvas.getContext("2d");
+ctx.imageSmoothingEnabled = false;
+ctx.mozImageSmoothingEnabled = false;
+ctx.webkitImageSmoothingEnabled = false;
 
 ctx.font = `${TILE_SIZE}px sans-serif`;
 ctx.textBaseline = "top";
@@ -278,16 +281,39 @@ function bresenhamLine(x, y, xx, yy) {
   ctx.fillStyle = oldFill; // restore old fill style
 }
 
-function print(text, x, y, color, fontSize) {
-  if (fontSize) {
-    ctx.font = `${fontSize}px sans-serif`;
-  } else {
-    ctx.font = `${TILE_SIZE}px sans-serif`;
+function print(text, x, y, color = "#ffffff", fontSize = 8) {
+  let holderCanvas = document.createElement("canvas");
+  holderCanvas.height = 8;
+  holderCanvas.width = 8;
+  let holderCtx = holderCanvas.getContext("2d");
+  holderCtx.imageSmoothingEnabled = false;
+  holderCtx.mozImageSmoothingEnabled = false;
+  holderCtx.webkitImageSmoothingEnabled = false;
+
+  for (let c = 0; c < text.length; ++c) {
+    let char = CHARACTERS[text[c]];
+    holderCanvas.height = 8;
+    holderCanvas.width = 8;
+    holderCtx.clearRect(0, 0, 8, 8);
+    holderCtx.drawImage(font, char.x, char.y, 8, 8, 0, 0, 8, 8);
+    holderCtx.globalCompositeOperation = "source-in";
+    holderCtx.fillStyle = color;
+    holderCtx.fillRect(0, 0, 8, 8);
+    // holderCanvas.height = fontSize;
+    // holderCanvas.width = fontSize;
+    ctx.drawImage(
+      holderCanvas,
+      0,
+      0,
+      8,
+      8,
+      Math.floor(x) - cameraOffset.x + c * fontSize,
+      Math.floor(y) - cameraOffset.y,
+      fontSize,
+      fontSize
+    );
   }
-  if (color) {
-    ctx.fillStyle = color;
-  }
-  ctx.fillText(text, x, y);
+  // ctx.fillText(text, x, y);
 }
 
 function loadFont() {
