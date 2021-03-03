@@ -11,6 +11,12 @@ const States = {
   gameScreen: false,
 };
 
+const Colors = {
+  darkRed: "#ac3232",
+  lightGray: "#847e87",
+  white: "#ffffff",
+};
+
 function _init() {
   deathShot = undefined;
   tutorialMan = {
@@ -381,19 +387,19 @@ function lowerCurrentPieces() {
 }
 
 function drawBunkerBar(x, y) {
-  rect(x, y, x + 96, y + 16, "gray");
+  rect(x, y, x + 96, y + 16, Colors.lightGray);
   rectFill(
     x + 1,
     y + 1,
     x + 1 + Math.floor(((95 - 1) / bunkerSpawnTarget) * bunkerSpawnScore),
     y + 16 - 1,
-    "red"
+    Colors.darkRed
   );
   print(
     `${bunkerSpawnScore} / ${bunkerSpawnTarget}`,
     x + 8,
     y + 4,
-    "white",
+    Colors.white,
     10
   );
 }
@@ -680,32 +686,39 @@ function drawGame() {
   }
   drawBunkerBar(0, 80);
   if (!States.levelLost) {
-    print(`Blowout: ${blowoutCounter}`, 4, 100, "white");
+    print(`Blowout: ${blowoutCounter}`, 4, 100, Colors.white);
   } else {
-    rectFill(4, 100, 92, 156, "red");
-    print("LOSE", 4, 100, "white");
+    rectFill(4, 100, 92, 156, Colors.darkRed);
+    print("LOSE", 4, 100, Colors.white);
   }
   if (States.levelWon) {
     rectFill(4, 100, 92, 156, "green");
-    print("WIN", 4, 100, "white");
+    print("WIN", 4, 100, Colors.white);
   }
   if (States.levelLostShot) {
-    rectFill(4, 100, 92, 156, "red");
-    print("YOU GOT", 4, 100, "white");
-    print("SHOT", 4, 116, "white");
+    rectFill(4, 100, 92, 156, Colors.darkRed);
+    print("YOU GOT", 4, 100, Colors.white);
+    print("SHOT", 4, 116, Colors.white);
+    line(
+      deathShot[0].x,
+      deathShot[0].y,
+      deathShot[1].x,
+      deathShot[1].y,
+      Colors.darkRed
+    );
   }
   drawScoreFloaties();
   drawHoldTimer();
 }
 
 function drawTutorial() {
-  print("drag man", 0, 0, "white", 10);
+  print("drag man", 0, 0, Colors.white, 10);
   spr(3, tutorialPiece2.x, tutorialPiece2.y);
   spr(5, tutorialPiece1.x, tutorialPiece1.y);
   spr(0, tutorialMan.x, tutorialMan.y);
   let shiftY = TILE_SIZE;
-  print("match 3 or more for", 0, 0 + shiftY, "white", 10);
-  print("combos", 0, 10 + shiftY, "white", 10);
+  print("match 3 or more for", 0, 0 + shiftY, Colors.white, 10);
+  print("combos", 0, 10 + shiftY, Colors.white, 10);
   let offset = {
     x: TILE_SIZE * 2 + 8,
     y: TILE_SIZE - 8,
@@ -719,14 +732,14 @@ function drawTutorial() {
   spr(4, TILE_SIZE * 2 + offset.x, TILE_SIZE + offset.y + shiftY);
   spr(0, TILE_SIZE * 3 + offset.x, TILE_SIZE + offset.y + shiftY);
 
-  print("fill bar for bunker", 0, TILE_SIZE * 2 + 8 + shiftY, "white", 10);
+  print("fill bar for bunker", 0, TILE_SIZE * 2 + 8 + shiftY, Colors.white, 10);
   bunkerSpawnScore = bunkerSpawnTarget * 0.8;
   drawBunkerBar(0, TILE_SIZE * 2 + 18 + shiftY);
-  print("=", TILE_SIZE * 4, TILE_SIZE * 2 + 26 + shiftY, "white");
+  print("=", TILE_SIZE * 4, TILE_SIZE * 2 + 26 + shiftY, Colors.white);
   spr(7, TILE_SIZE * 4 + 10, TILE_SIZE * 2 + 26 + shiftY);
   bunkerSpawnScore = 0;
 
-  print("avoid bandits", 0, TILE_SIZE * 4 + 8 + shiftY, "white", 10);
+  print("avoid bandits", 0, TILE_SIZE * 4 + 8 + shiftY, Colors.white, 10);
   spr(8, 0, TILE_SIZE * 5 + shiftY);
   spr(2, TILE_SIZE * 1, TILE_SIZE * 5 + shiftY);
   spr(1, TILE_SIZE * 2, TILE_SIZE * 5 + shiftY);
@@ -738,13 +751,13 @@ function drawTutorial() {
     TILE_SIZE * 5 + 8 + shiftY,
     TILE_SIZE * 5 + 8,
     TILE_SIZE * 5 + 9 + shiftY,
-    "red"
+    Colors.darkRed
   );
-  print("X", WIDTH / 2 - 8 + 2, TILE_SIZE * 5 + 2 + shiftY, "red");
+  print("X", WIDTH / 2 - 8 + 2, TILE_SIZE * 5 + 2 + shiftY, Colors.darkRed);
 
-  print("encase man in", 0, TILE_SIZE * 6 + shiftY, "white", 10);
-  print("bunker!", 0, TILE_SIZE * 6 + 10 + shiftY, "white", 10);
-  print("WIN!", 0, TILE_SIZE * 6 + 30 + shiftY, "white", 10);
+  print("encase man in", 0, TILE_SIZE * 6 + shiftY, Colors.white, 10);
+  print("bunker!", 0, TILE_SIZE * 6 + 10 + shiftY, Colors.white, 10);
+  print("WIN!", 0, TILE_SIZE * 6 + 30 + shiftY, Colors.white, 10);
   spr(7, TILE_SIZE * 2 + 4, TILE_SIZE * 6 + 10 + shiftY);
   spr(7, TILE_SIZE * 2 + 20, TILE_SIZE * 6 + 10 + shiftY);
   spr(7, TILE_SIZE * 2 + 36, TILE_SIZE * 6 + 10 + shiftY);
@@ -754,9 +767,6 @@ function drawTutorial() {
   spr(7, TILE_SIZE * 2 + 4, TILE_SIZE * 8 + 10 + shiftY);
   spr(7, TILE_SIZE * 2 + 20, TILE_SIZE * 8 + 10 + shiftY);
   spr(7, TILE_SIZE * 2 + 36, TILE_SIZE * 8 + 10 + shiftY);
-
-  rect(TILE_SIZE * 5, 0, TILE_SIZE * 6, TILE_SIZE, "red");
-  line(TILE_SIZE * 5, 8, TILE_SIZE * 6, 8, "blue");
 }
 
 function updateTutorial() {
@@ -791,8 +801,8 @@ function drawScoreFloaties() {
   for (let i = 0; i < scoreFloaties.length; ++i) {
     let floaty = scoreFloaties[i];
     if (floaty.timer > 0) {
-      print(floaty.val, floaty.x + 2, floaty.y + 4, "white", 8);
-      print(floaty.val, floaty.x + 2, floaty.y + 4, "white", 8);
+      print(floaty.val, floaty.x + 2, floaty.y + 4, Colors.white, 8);
+      print(floaty.val, floaty.x + 2, floaty.y + 4, Colors.white, 8);
     }
   }
 }
