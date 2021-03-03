@@ -281,7 +281,14 @@ function bresenhamLine(x, y, xx, yy) {
   ctx.fillStyle = oldFill; // restore old fill style
 }
 
-function print(text, x, y, color = "#ffffff", fontSize = 8) {
+function print(t, x, y, color = "#ffffff", fontSize = 8) {
+  let text = "";
+  try {
+    text = t.toString();
+  } catch {
+    return;
+  }
+
   let holderCanvas = document.createElement("canvas");
   holderCanvas.height = 8;
   holderCanvas.width = 8;
