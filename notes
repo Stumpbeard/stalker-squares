@@ -25,8 +25,11 @@ no dudes can shoot you if you make a combo that turn
 3. added lose state, implemented print engine command
 4. added bandits, bandit lose state
 
+2.5 hours
 1. Work on smoothness of movement controls
 2. add tutorial screen
 3. add piece values and stuff
 4. Fix bandit bugs and movement bugs and make only stalker moveable
 5. Engine work for non-blurry lines
+
+1. standardize colors, load font

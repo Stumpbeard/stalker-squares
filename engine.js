@@ -13,7 +13,10 @@ ctx.font = `${TILE_SIZE}px sans-serif`;
 ctx.textBaseline = "top";
 
 const spriteSheet = document.getElementById("spritesheet");
+const font = document.getElementById("font");
+
 const SPRITES = [];
+const CHARACTERS = {};
 let previousTick = 0;
 let frameTotal = 0;
 const FPS = 1000 / FRAME_CAP;
@@ -38,7 +41,7 @@ const buttonHasUpped = {};
 let mouseData = { x: 0, y: 0, mouse1: false, xDiff: 0, yDiff: 0 };
 
 function start() {
-  if (!spriteSheet.complete) {
+  if (!spriteSheet.complete || !font.complete) {
     window.requestAnimationFrame(start);
     return;
   }
@@ -47,6 +50,7 @@ function start() {
       SPRITES.push({ x: x, y: y });
     }
   }
+  loadFont();
 
   _init();
   window.requestAnimationFrame(tick);
@@ -284,6 +288,19 @@ function print(text, x, y, color, fontSize) {
     ctx.fillStyle = color;
   }
   ctx.fillText(text, x, y);
+}
+
+function loadFont() {
+  let chars =
+    " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz♪~●►";
+
+  for (y = 0; y < font.height; y += 8) {
+    for (x = 0; x < font.width; x += 8) {
+      let curChar = chars[0];
+      chars = chars.substring(1);
+      CHARACTERS[curChar] = { x: x, y: y };
+    }
+  }
 }
 
 window.onresize = resizeCanvas;
