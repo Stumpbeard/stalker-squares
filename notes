@@ -1,7 +1,6 @@
 known bugs:
 can move mouse out of bounds and very quickly to switch non adjacent pieces
-shot text goes off screen
-no dudes can shoot you if you make a combo that turn
+resizing text below 8 blurs it
 
 2 hours
 1. fix screen sizing
