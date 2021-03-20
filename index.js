@@ -9,6 +9,7 @@ const States = {
   levelLostShot: false,
   tutorialScreen: true,
   gameScreen: false,
+  firstSwap: false,
 };
 
 const Colors = {
@@ -16,6 +17,8 @@ const Colors = {
   lightRed: "#d95763",
   lightGray: "#847e87",
   white: "#ffffff",
+  lightGreen: "#99e550",
+  darkGreen: "#6abe30",
 };
 
 function _init() {
@@ -53,6 +56,7 @@ function _init() {
   States.inited = true;
   States.playerControl = true;
   scoreFloaties = [];
+  playerStrobe = 0;
 }
 
 function _update() {
@@ -84,7 +88,26 @@ function newPiece(x, y) {
 }
 
 function drawPiece(piece) {
-  spr(piece.color, piece.x, piece.y);
+  if (!heldPiece.piece && States.playerControl && piece.color === 0) {
+    switch (Math.floor(playerStrobe) % 5) {
+      case 0:
+        spr(9, piece.x, piece.y);
+        break;
+      case 1:
+        spr(10, piece.x, piece.y);
+        break;
+      case 2:
+        spr(11, piece.x, piece.y);
+        break;
+      case 3:
+        spr(10, piece.x, piece.y);
+      default:
+        spr(9, piece.x, piece.y);
+        break;
+    }
+  } else {
+    spr(piece.color, piece.x, piece.y);
+  }
 }
 
 function newBoard(x, y) {
@@ -394,7 +417,7 @@ function drawBunkerBar(x, y) {
     y + 1,
     x + 1 + Math.floor(((95 - 1) / bunkerSpawnTarget) * bunkerSpawnScore),
     y + 16 - 1,
-    Colors.darkRed
+    Colors.darkGreen
   );
   print(`${bunkerSpawnScore} / ${bunkerSpawnTarget}`, x, y + 4, Colors.white);
 }
@@ -557,6 +580,7 @@ function arePiecesColliding(piece1, piece2) {
 }
 
 function updateGame() {
+  playerStrobe += 1 / 3;
   if (States.playerControl) {
     if (!heldPiece.piece) {
       unfreshenPieces();
@@ -709,7 +733,7 @@ function drawGame() {
 function drawTutorial() {
   print("drag", 0, 0, Colors.white);
   print("man", 0, 8, Colors.white);
-  spr(3, tutorialPiece2.x, tutorialPiece2.y);
+  spr(7, tutorialPiece2.x, tutorialPiece2.y);
   spr(5, tutorialPiece1.x, tutorialPiece1.y);
   spr(0, tutorialMan.x, tutorialMan.y);
   let shiftY = TILE_SIZE;
