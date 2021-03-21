@@ -113,6 +113,9 @@ function sfx(n) {
   }
   let sound = new Audio(SOUNDS[n].src);
   sound.play();
+  sound.addEventListener("ended", (e) => {
+    delete e.target;
+  });
 }
 
 function btn(button) {
