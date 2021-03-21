@@ -653,6 +653,7 @@ function updateGame() {
         } else if (winStateExists()) {
           States.levelWon = true;
           States.playerControl = false;
+          sfx(6);
         } else if (blowoutCounter <= 0) {
           sfx(5);
           States.levelLost = true;
