@@ -2,6 +2,9 @@ known bugs:
 can move mouse out of bounds and very quickly to switch non adjacent pieces
 resizing text below 8 blurs it
 
+credit:
+sfx: https://jdwasabi.itch.io/8-bit-16-bit-sound-effects-pack
+
 2 hours
 1. fix screen sizing
 2. draw board and verify no matches
