@@ -341,6 +341,10 @@ function replacePieces() {
   let newWalls = Math.floor(bunkerSpawnScore / bunkerSpawnTarget);
   bunkerSpawnScore = bunkerSpawnScore % bunkerSpawnTarget;
 
+  if (newWalls > 0) {
+    sfx(3);
+  }
+
   while (newWalls > 0) {
     let roll = Math.floor(Math.random() * replacedPieces.length);
     let piece = replacedPieces[roll][2];
@@ -467,6 +471,7 @@ function tryForBandit(piece) {
   const roll = Math.floor(Math.random() * chance);
   if (roll === 0) {
     piece.color = 8;
+    sfx(4);
   }
 }
 
@@ -595,6 +600,7 @@ function updateGame() {
         heldPiece.pieceDropped &&
         hoverPiece.color === 0
       ) {
+        sfx(1);
         heldPiece.piece = board.pieces[y][x];
         heldPiece.origX = x;
         heldPiece.origY = y;
@@ -617,6 +623,7 @@ function updateGame() {
               swapPiece !== heldPiece.piece &&
               arePiecesColliding(heldPiece.piece, swapPiece)
             ) {
+              sfx(2);
               heldPiece.firstSwitch = true;
               swapPieces(swapPiece, x, y);
             }
@@ -639,6 +646,7 @@ function updateGame() {
         heldPiece.piece.targetY = heldPiece.piece.y;
         let combos = markMatchingPieces();
         if (combos.length > 0) {
+          sfx(0);
           States.playerControl = false;
           removeComboPieces(combos);
           States.loweringCurrentPieces = true;
@@ -646,6 +654,7 @@ function updateGame() {
           States.levelWon = true;
           States.playerControl = false;
         } else if (blowoutCounter <= 0) {
+          sfx(5);
           States.levelLost = true;
           States.playerControl = false;
         }
@@ -664,6 +673,7 @@ function updateGame() {
     if (!movedPieces) {
       let combos = markMatchingPieces();
       if (combos.length > 0) {
+        sfx(0);
         States.playerControl = false;
         removeComboPieces(combos);
         States.loweringCurrentPieces = true;
@@ -678,6 +688,7 @@ function updateGame() {
     if (!movedPieces) {
       let combos = markMatchingPieces();
       if (combos.length > 0) {
+        sfx(0);
         States.playerControl = false;
         removeComboPieces(combos);
         States.loweringCurrentPieces = true;
@@ -708,7 +719,8 @@ function drawGame() {
     print(`Blowout: ${blowoutCounter}`, 4, 100, Colors.white);
   } else {
     rectFill(4, 100, 92, 156, Colors.darkRed);
-    print("LOSE", 4, 100, Colors.white);
+    print("BLOWOUT", 4, 100, Colors.white);
+    print("YOU LOSE", 4, 116, Colors.white);
   }
   if (States.levelWon) {
     rectFill(4, 100, 92, 156, "green");
@@ -804,6 +816,7 @@ function updateTutorial() {
   if (mouse().mouse1) {
     States.tutorialScreen = false;
     States.gameScreen = true;
+    sfx(0);
   }
 }
 
@@ -850,6 +863,7 @@ function unfreshenPieces() {
 function checkBanditLoseState() {
   let shots = checkBanditShots();
   if (shots) {
+    sfx(5);
     States.levelLostShot = true;
     States.playerControl = false;
   }
