@@ -19,6 +19,7 @@ const spriteSheet = document.getElementById("spritesheet");
 const font = document.getElementById("font");
 
 const SPRITES = [];
+let SOUNDS = [];
 const CHARACTERS = {};
 let previousTick = 0;
 let frameTotal = 0;
@@ -54,9 +55,14 @@ function start() {
     }
   }
   loadFont();
+  loadSounds();
 
   _init();
   window.requestAnimationFrame(tick);
+}
+
+function loadSounds() {
+  SOUNDS = document.getElementsByClassName("sound");
 }
 
 function tick(delta) {
@@ -98,6 +104,15 @@ function spr(i, x, y) {
     TILE_SIZE,
     TILE_SIZE
   );
+}
+
+function sfx(n) {
+  if (n >= SOUNDS.length) {
+    console.log("Sound does not exist.");
+    return;
+  }
+  let sound = new Audio(SOUNDS[n].src);
+  sound.play();
 }
 
 function btn(button) {
