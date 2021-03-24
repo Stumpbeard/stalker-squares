@@ -423,7 +423,7 @@ function drawBunkerBar(x, y) {
     y + 16 - 1,
     Colors.darkGreen
   );
-  print(`${bunkerSpawnScore} / ${bunkerSpawnTarget}`, x, y + 4, Colors.white);
+  print(`${bunkerSpawnScore/10} / ${bunkerSpawnTarget/10}`, x, y + 4, Colors.white);
 }
 
 function drawHoldTimer() {
@@ -834,8 +834,8 @@ function drawScoreFloaties() {
   for (let i = 0; i < scoreFloaties.length; ++i) {
     let floaty = scoreFloaties[i];
     if (floaty.timer > 0) {
-      print(floaty.val, floaty.x + 2, floaty.y + 4, Colors.white, 4);
-      print(floaty.val, floaty.x + 2, floaty.y + 4, Colors.white, 4);
+      print(floaty.val/10, floaty.x + 2, floaty.y + 4, Colors.white, 8);
+      print(floaty.val/10, floaty.x + 2, floaty.y + 4, Colors.white, 8);
     }
   }
 }
