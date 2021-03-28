@@ -627,20 +627,31 @@ function updateGame() {
           heldPiece.timer = Math.max(0, heldPiece.timer - 1);
         }
         if (heldPiece.timer > 0) {
-          heldPiece.piece.x += m.x - heldPiece.lastX;
+          heldPiece.piece.x = Math.max(
+            heldPiece.piece.x - TILE_SIZE,
+            Math.min(m.x - TILE_SIZE / 2, heldPiece.piece.x + TILE_SIZE)
+          );
           heldPiece.piece.targetX = heldPiece.piece.x;
-          heldPiece.piece.y += m.y - heldPiece.lastY;
+          heldPiece.piece.y = Math.max(
+            heldPiece.piece.y - TILE_SIZE,
+            Math.min(m.y - TILE_SIZE / 2, heldPiece.piece.y + TILE_SIZE)
+          );
           heldPiece.piece.targetY = heldPiece.piece.y;
-          if (y < board.pieces.length && x < board.pieces[0].length) {
-            let swapPiece = board.pieces[y][x];
-            if (
-              swapPiece !== heldPiece.piece &&
-              arePiecesColliding(heldPiece.piece, swapPiece)
-            ) {
-              sfx(2);
-              heldPiece.firstSwitch = true;
-              swapPieces(swapPiece, x, y);
-            }
+
+          let swapX = Math.floor(
+            (heldPiece.piece.x + TILE_SIZE / 2) / TILE_SIZE
+          );
+          let swapY = Math.floor(
+            (heldPiece.piece.y + TILE_SIZE / 2) / TILE_SIZE
+          );
+          let swapPiece = board.pieces[swapY][swapX];
+          if (
+            swapPiece !== heldPiece.piece &&
+            arePiecesColliding(heldPiece.piece, swapPiece)
+          ) {
+            sfx(2);
+            heldPiece.firstSwitch = true;
+            swapPieces(swapPiece, swapX, swapY);
           }
         }
       }
