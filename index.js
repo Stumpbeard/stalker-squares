@@ -39,7 +39,7 @@ function _init() {
   bunkerSpawnScore = 0;
   bunkerSpawnTarget = 1000;
   pieceHoldLimit = 4;
-  blowoutCounter = 18;
+  blowoutCounter = 16;
   wallPieces = 0;
   board = newBoard(0, TILE_SIZE * 7);
   heldPiece = {

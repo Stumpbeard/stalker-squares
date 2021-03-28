@@ -45,7 +45,8 @@ sfx: https://jdwasabi.itch.io/8-bit-16-bit-sound-effects-pack
 
 -- 0.2.0 -- first round polish done
 
-1.5 hours
+2 hours
 1. fix bugs related to dragging
 2. accessibilty and rearranging UI and changing wub
 3. fix window size issues and add touch support
+4. fix phase shifting pieces
