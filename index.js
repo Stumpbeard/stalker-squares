@@ -37,9 +37,9 @@ function _init() {
     y: 0,
   };
   bunkerSpawnScore = 0;
-  bunkerSpawnTarget = 2000;
+  bunkerSpawnTarget = 1000;
   pieceHoldLimit = 4;
-  blowoutCounter = 16;
+  blowoutCounter = 18;
   wallPieces = 0;
   board = newBoard(0, TILE_SIZE * 7);
   heldPiece = {
@@ -423,7 +423,7 @@ function drawBunkerBar(x, y) {
     y + 16 - 1,
     Colors.darkGreen
   );
-  print(`${bunkerSpawnScore/10} / ${bunkerSpawnTarget/10}`, x, y + 4, Colors.white);
+  print(`${bunkerSpawnScore/10} / ${bunkerSpawnTarget/10}`, x+ 4, y + 4, Colors.white);
 }
 
 function drawHoldTimer() {
@@ -728,27 +728,27 @@ function drawGame() {
     });
 
   }
-  drawBunkerBar(0, 80);
+  drawBunkerBar(0, 0);
   if (!States.levelLost) {
-    print(`Blowout: ${blowoutCounter}`, 4, 100, Colors.white);
+    print(`Blowout: ${blowoutCounter}`, TILE_SIZE/4, TILE_SIZE * 1.25, Colors.white);
   } else {
-    rectFill(4, 100, 92, 156, Colors.darkRed);
-    print("BLOWOUT", 4, 100, Colors.white);
-    print("YOU LOSE", 4, 116, Colors.white);
+    rectFill(4, TILE_SIZE * 2, 92, TILE_SIZE * 2 + 56, Colors.darkRed);
+    print("BLOWOUT", 4, TILE_SIZE * 2 + 4, Colors.white);
+    print("YOU LOSE", 4, TILE_SIZE * 3 + 4, Colors.white);
   }
   if (States.levelWon) {
-    rectFill(4, 100, 92, 156, "green");
-    print("WIN", 4, 100, Colors.white);
+    rectFill(4, TILE_SIZE * 2, 92, TILE_SIZE * 2 + 56, "green");
+    print("WIN", 4, TILE_SIZE * 2  + 4, Colors.white);
   }
   if (States.levelLostShot) {
-    rectFill(4, 100, 92, 156, Colors.darkRed);
-    print("YOU GOT", 4, 100, Colors.white);
-    print("SHOT", 4, 116, Colors.white);
+    rectFill(4, TILE_SIZE * 2, 92, TILE_SIZE * 2 + 56, Colors.darkRed);
+    print("YOU GOT", 4, TILE_SIZE * 2 + 4, Colors.white);
+    print("SHOT", 4, TILE_SIZE * 3 + 4, Colors.white);
     line(
-      deathShot[0].x,
-      deathShot[0].y,
-      deathShot[1].x,
-      deathShot[1].y,
+      deathShot[0].x + board.x,
+      deathShot[0].y + board.y,
+      deathShot[1].x + board.x,
+      deathShot[1].y + board.y,
       Colors.darkRed
     );
   }
