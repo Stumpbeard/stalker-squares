@@ -187,6 +187,7 @@ canvas.addEventListener(
 canvas.addEventListener(
   "touchstart",
   (event) => {
+    console.log("touchstart")
     mouseData.mouse1 = true;
   },
   false
@@ -195,6 +196,7 @@ canvas.addEventListener(
 canvas.addEventListener(
   "touchend",
   (event) => {
+    console.log("touchend")
     mouseData.mouse1 = false;
   },
   false
@@ -226,16 +228,17 @@ document.addEventListener(
 document.addEventListener(
   "touchmove",
   (event) => {
+    console.log("touchmove")
     let x = Math.floor(
-      (WIDTH / canvas.scrollWidth) * (event.touches[0].clientX - canvas.offsetLeft)
+      (WIDTH / canvas.scrollWidth) * (event.touches[0].pageX - canvas.offsetLeft)
     );
     let y = Math.floor(
-      (HEIGHT / canvas.scrollHeight) * (event.touches[0].clientY - canvas.offsetTop)
+      (HEIGHT / canvas.scrollHeight) * (event.touches[0].pageY - canvas.offsetTop)
     );
     const pos = {
       x: x,
       y: y,
-      mouse1: event.buttons % 2 == 1,
+      mouse1: true,
       xDiff: x - mouseData.x,
       yDiff: y - mouseData.y,
     };
