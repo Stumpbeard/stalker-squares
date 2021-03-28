@@ -423,7 +423,12 @@ function drawBunkerBar(x, y) {
     y + 16 - 1,
     Colors.darkGreen
   );
-  print(`${bunkerSpawnScore/10} / ${bunkerSpawnTarget/10}`, x+ 4, y + 4, Colors.white);
+  print(
+    `${bunkerSpawnScore / 10} / ${bunkerSpawnTarget / 10}`,
+    x + 4,
+    y + 4,
+    Colors.white
+  );
 }
 
 function drawHoldTimer() {
@@ -434,7 +439,8 @@ function drawHoldTimer() {
       heldPiece.piece.x +
         Math.floor(
           (TILE_SIZE / (pieceHoldLimit * FRAME_CAP)) * heldPiece.timer
-        ) + board.x,
+        ) +
+        board.x,
       heldPiece.piece.y + TILE_SIZE + board.y,
       "green"
     );
@@ -591,10 +597,10 @@ function updateGame() {
       unfreshenPieces();
     }
     let m = mouse();
-    m.x -= board.x
-    m.y -= board.y
-    m.x = Math.max(0, Math.min(m.x, board.pieces[0].length * TILE_SIZE - 1))
-    m.y = Math.max(0, Math.min(m.y, board.pieces.length * TILE_SIZE - 1))
+    m.x -= board.x;
+    m.y -= board.y;
+    m.x = Math.max(0, Math.min(m.x, board.pieces[0].length * TILE_SIZE - 1));
+    m.y = Math.max(0, Math.min(m.y, board.pieces.length * TILE_SIZE - 1));
     if (m.mouse1 && heldPiece.timer > 0) {
       let x = Math.floor(m.x / TILE_SIZE);
       let y = Math.floor(m.y / TILE_SIZE);
@@ -608,9 +614,9 @@ function updateGame() {
         heldPiece.piece = board.pieces[y][x];
         heldPiece.origX = x;
         heldPiece.origY = y;
-        heldPiece.piece.x = m.x - TILE_SIZE/2;
+        heldPiece.piece.x = m.x - TILE_SIZE / 2;
         heldPiece.piece.targetX = heldPiece.piece.x;
-        heldPiece.piece.y = m.y - TILE_SIZE/2;
+        heldPiece.piece.y = m.y - TILE_SIZE / 2;
         heldPiece.piece.targetY = heldPiece.piece.y;
         States.pieceHeld = true;
         heldPiece.timer = pieceHoldLimit * FRAME_CAP;
@@ -726,11 +732,15 @@ function drawGame() {
       y: board.y + heldPiece.piece.y,
       color: heldPiece.piece.color,
     });
-
   }
   drawBunkerBar(0, 0);
   if (!States.levelLost) {
-    print(`Blowout: ${blowoutCounter}`, TILE_SIZE/4, TILE_SIZE * 1.25, Colors.white);
+    print(
+      `Blowout: ${blowoutCounter}`,
+      TILE_SIZE / 4,
+      TILE_SIZE * 1.25,
+      Colors.white
+    );
   } else {
     rectFill(4, TILE_SIZE * 2, 92, TILE_SIZE * 2 + 56, Colors.darkRed);
     print("BLOWOUT", 4, TILE_SIZE * 2 + 4, Colors.white);
@@ -738,7 +748,7 @@ function drawGame() {
   }
   if (States.levelWon) {
     rectFill(4, TILE_SIZE * 2, 92, TILE_SIZE * 2 + 56, "green");
-    print("WIN", 4, TILE_SIZE * 2  + 4, Colors.white);
+    print("WIN", 4, TILE_SIZE * 2 + 4, Colors.white);
   }
   if (States.levelLostShot) {
     rectFill(4, TILE_SIZE * 2, 92, TILE_SIZE * 2 + 56, Colors.darkRed);
@@ -847,8 +857,8 @@ function drawScoreFloaties() {
   for (let i = 0; i < scoreFloaties.length; ++i) {
     let floaty = scoreFloaties[i];
     if (floaty.timer > 0) {
-      print(floaty.val/10, floaty.x + 2, floaty.y + 4, Colors.white, 8);
-      print(floaty.val/10, floaty.x + 2, floaty.y + 4, Colors.white, 8);
+      print(floaty.val / 10, floaty.x + 2, floaty.y + 4, Colors.white, 8);
+      print(floaty.val / 10, floaty.x + 2, floaty.y + 4, Colors.white, 8);
     }
   }
 }

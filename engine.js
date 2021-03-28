@@ -187,7 +187,7 @@ canvas.addEventListener(
 canvas.addEventListener(
   "touchstart",
   (event) => {
-    console.log("touchstart")
+    console.log("touchstart");
     mouseData.mouse1 = true;
   },
   false
@@ -196,12 +196,11 @@ canvas.addEventListener(
 canvas.addEventListener(
   "touchend",
   (event) => {
-    console.log("touchend")
+    console.log("touchend");
     mouseData.mouse1 = false;
   },
   false
 );
-
 
 document.addEventListener(
   "mousemove",
@@ -228,12 +227,14 @@ document.addEventListener(
 document.addEventListener(
   "touchmove",
   (event) => {
-    console.log("touchmove")
+    console.log("touchmove");
     let x = Math.floor(
-      (WIDTH / canvas.scrollWidth) * (event.touches[0].pageX - canvas.offsetLeft)
+      (WIDTH / canvas.scrollWidth) *
+        (event.touches[0].pageX - canvas.offsetLeft)
     );
     let y = Math.floor(
-      (HEIGHT / canvas.scrollHeight) * (event.touches[0].pageY - canvas.offsetTop)
+      (HEIGHT / canvas.scrollHeight) *
+        (event.touches[0].pageY - canvas.offsetTop)
     );
     const pos = {
       x: x,
@@ -253,8 +254,8 @@ document.addEventListener("DOMContentLoaded", start, false);
 function resizeCanvas() {
   let windowWidth = document.body.clientWidth;
   let windowHeight = document.body.clientHeight;
-  let windowRatio = windowHeight / windowWidth
-  let canvasRatio = HEIGHT/WIDTH
+  let windowRatio = windowHeight / windowWidth;
+  let canvasRatio = HEIGHT / WIDTH;
   if (windowRatio <= canvasRatio) {
     canvas.style.width = "";
     canvas.style.height = windowHeight.toString() + "px";
