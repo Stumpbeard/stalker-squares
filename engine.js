@@ -1,5 +1,5 @@
 const WIDTH = 96;
-const HEIGHT = 80 * 2;
+const HEIGHT = 96 * 2;
 const FRAME_CAP = 30;
 const TILE_SIZE = 16;
 
@@ -184,14 +184,14 @@ canvas.addEventListener(
   false
 );
 
-canvas.addEventListener(
+document.addEventListener(
   "mousemove",
   (event) => {
     let x = Math.floor(
-      (WIDTH / event.target.scrollWidth) * (event.x - event.target.offsetLeft)
+      (WIDTH / canvas.scrollWidth) * (event.x - canvas.offsetLeft)
     );
     let y = Math.floor(
-      (HEIGHT / event.target.scrollHeight) * (event.y - event.target.offsetTop)
+      (HEIGHT / canvas.scrollHeight) * (event.y - canvas.offsetTop)
     );
     const pos = {
       x: x,

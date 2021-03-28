@@ -41,7 +41,7 @@ function _init() {
   pieceHoldLimit = 4;
   blowoutCounter = 16;
   wallPieces = 0;
-  board = newBoard(0, 0);
+  board = newBoard(0, TILE_SIZE * 7);
   heldPiece = {
     piece: undefined,
     lastX: 0,
@@ -429,13 +429,13 @@ function drawBunkerBar(x, y) {
 function drawHoldTimer() {
   if (heldPiece.piece && heldPiece.firstSwitch) {
     rect(
-      heldPiece.piece.x,
-      heldPiece.piece.y + TILE_SIZE,
+      heldPiece.piece.x + board.x,
+      heldPiece.piece.y + TILE_SIZE + board.y,
       heldPiece.piece.x +
         Math.floor(
           (TILE_SIZE / (pieceHoldLimit * FRAME_CAP)) * heldPiece.timer
-        ),
-      heldPiece.piece.y + TILE_SIZE,
+        ) + board.x,
+      heldPiece.piece.y + TILE_SIZE + board.y,
       "green"
     );
   }
@@ -556,9 +556,9 @@ function isColliding(one, two) {
 
   if (
     rect1.x < rect2.x + rect2.width &&
-    rect1.x + rect1.width > rect2.x &&
+    rect1.x + rect1.width >= rect2.x &&
     rect1.y < rect2.y + rect2.height &&
-    rect1.y + rect1.height > rect2.y
+    rect1.y + rect1.height >= rect2.y
   ) {
     return true;
   }
@@ -591,6 +591,10 @@ function updateGame() {
       unfreshenPieces();
     }
     let m = mouse();
+    m.x -= board.x
+    m.y -= board.y
+    m.x = Math.max(0, Math.min(m.x, board.pieces[0].length * TILE_SIZE - 1))
+    m.y = Math.max(0, Math.min(m.y, board.pieces.length * TILE_SIZE - 1))
     if (m.mouse1 && heldPiece.timer > 0) {
       let x = Math.floor(m.x / TILE_SIZE);
       let y = Math.floor(m.y / TILE_SIZE);
@@ -604,6 +608,10 @@ function updateGame() {
         heldPiece.piece = board.pieces[y][x];
         heldPiece.origX = x;
         heldPiece.origY = y;
+        heldPiece.piece.x = m.x - TILE_SIZE/2;
+        heldPiece.piece.targetX = heldPiece.piece.x;
+        heldPiece.piece.y = m.y - TILE_SIZE/2;
+        heldPiece.piece.targetY = heldPiece.piece.y;
         States.pieceHeld = true;
         heldPiece.timer = pieceHoldLimit * FRAME_CAP;
         heldPiece.firstSwitch = false;
@@ -713,7 +721,12 @@ function updateGame() {
 function drawGame() {
   drawBoard(board);
   if (States.pieceHeld) {
-    drawPiece(heldPiece.piece);
+    drawPiece({
+      x: board.x + heldPiece.piece.x,
+      y: board.y + heldPiece.piece.y,
+      color: heldPiece.piece.color,
+    });
+
   }
   drawBunkerBar(0, 80);
   if (!States.levelLost) {

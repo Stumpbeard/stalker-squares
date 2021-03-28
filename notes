@@ -1,5 +1,4 @@
 known bugs:
-can move mouse out of bounds and very quickly to switch non adjacent pieces
 resizing text below 8 blurs it
 
 credit:
@@ -42,3 +41,5 @@ sfx: https://jdwasabi.itch.io/8-bit-16-bit-sound-effects-pack
 
 1. change bunker bar color, add strobe to man
 2. add support for sfx to engine and add sounds to game
+
+1. fix bugs related to dragging
