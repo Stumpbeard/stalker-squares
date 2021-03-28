@@ -184,6 +184,23 @@ canvas.addEventListener(
   false
 );
 
+canvas.addEventListener(
+  "touchstart",
+  (event) => {
+    mouseData.mouse1 = true;
+  },
+  false
+);
+
+canvas.addEventListener(
+  "touchend",
+  (event) => {
+    mouseData.mouse1 = false;
+  },
+  false
+);
+
+
 document.addEventListener(
   "mousemove",
   (event) => {
@@ -192,6 +209,28 @@ document.addEventListener(
     );
     let y = Math.floor(
       (HEIGHT / canvas.scrollHeight) * (event.y - canvas.offsetTop)
+    );
+    const pos = {
+      x: x,
+      y: y,
+      mouse1: event.buttons % 2 == 1,
+      xDiff: x - mouseData.x,
+      yDiff: y - mouseData.y,
+    };
+
+    mouseData = pos;
+  },
+  false
+);
+
+document.addEventListener(
+  "touchmove",
+  (event) => {
+    let x = Math.floor(
+      (WIDTH / canvas.scrollWidth) * (event.touches[0].clientX - canvas.offsetLeft)
+    );
+    let y = Math.floor(
+      (HEIGHT / canvas.scrollHeight) * (event.touches[0].clientY - canvas.offsetTop)
     );
     const pos = {
       x: x,
