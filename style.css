@@ -9,7 +9,6 @@ body {
 
 #canvas {
   background: #000;
-  flex: 0 0 auto;
   font-smooth: never;
   -webkit-font-smoothing: none;
   -moz-osx-font-smoothing: none;

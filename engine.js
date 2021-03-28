@@ -253,12 +253,14 @@ document.addEventListener("DOMContentLoaded", start, false);
 function resizeCanvas() {
   let windowWidth = document.body.clientWidth;
   let windowHeight = document.body.clientHeight;
-  if (windowHeight >= windowWidth) {
-    canvas.style.width = windowWidth.toString() + "px";
-    canvas.style.height = "";
-  } else {
-    canvas.style.height = windowHeight.toString() + "px";
+  let windowRatio = windowHeight / windowWidth
+  let canvasRatio = HEIGHT/WIDTH
+  if (windowRatio <= canvasRatio) {
     canvas.style.width = "";
+    canvas.style.height = windowHeight.toString() + "px";
+  } else {
+    canvas.style.height = "";
+    canvas.style.width = windowWidth.toString() + "px";
   }
 }
 
