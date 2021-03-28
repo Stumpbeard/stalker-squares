@@ -26,7 +26,7 @@ let frameTotal = 0;
 const FPS = 1000 / FRAME_CAP;
 let lastFrame = 0;
 
-let DEBUG = true;
+let DEBUG = false;
 
 let cameraOffset = {
   x: 0,
