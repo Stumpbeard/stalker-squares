@@ -1,0 +1,14 @@
+{
+  "short_name": "Bunker Match",
+  "name": "Bunker match",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/index.html",
+  "display": "fullscreen",
+  "orientation": "portrait"
+}
