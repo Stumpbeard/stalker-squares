@@ -40,7 +40,7 @@ function _init() {
   };
   bunkerSpawnScore = 0;
   totalScore = 0;
-  bunkerSpawnTarget = 200;
+  bunkerSpawnTarget = 1000;
   pieceHoldLimit = 4;
   blowoutCounter = 20;
   banditMod = 0;
@@ -760,9 +760,17 @@ function drawLevelUp() {
   rectFill(0, 0, blowoutWidth, HEIGHT, Colors.darkGreen)
   if (blowoutWidth >= WIDTH || States.levelUpChosen) {
     print("make worse:", 4, TILE_SIZE, Colors.white)
+
     print("bandits- " + banditMod, 4, TILE_SIZE * 2, Colors.white)
+    rect(2, TILE_SIZE * 2 - 3, WIDTH - 3, TILE_SIZE * 2.5 + 2, Colors.white)
+
     print("bunkers- " + bunkerMod/100, 4, TILE_SIZE * 3, Colors.white)
+    rect(2, TILE_SIZE * 3 - 3, WIDTH - 3, TILE_SIZE * 3.5 + 2, Colors.white)
+
     print("blowout- " + blowoutMod, 4, TILE_SIZE * 4, Colors.white)
+    rect(2, TILE_SIZE * 4 - 3, WIDTH - 3, TILE_SIZE * 4.5 + 2, Colors.white)
+
+    print("score:", 4, TILE_SIZE * 5, Colors.white)
   }
   print(totalScore/10, 4, TILE_SIZE * 6, Colors.white)
   if (playerIcon) {
@@ -834,16 +842,17 @@ function drawGame() {
       Colors.white
     );
   } else {
-    rectFill(4, TILE_SIZE * 2, 92, TILE_SIZE * 2 + 56, Colors.darkRed);
+    rectFill(4, TILE_SIZE * 2, 92, TILE_SIZE * 2 + 30, Colors.darkRed);
     print("BLOWOUT", 4, TILE_SIZE * 2 + 4, Colors.white);
     print("YOU LOSE", 4, TILE_SIZE * 3 + 4, Colors.white);
+    print("final score", 4, TILE_SIZE * 5, Colors.white)
   }
   if (States.levelWon) {
-    rectFill(4, TILE_SIZE * 2, 92, TILE_SIZE * 2 + 56, Colors.darkGreen);
-    print("WIN", 4, TILE_SIZE * 2 + 4, Colors.white);
+    rectFill(4, TILE_SIZE * 2, 92, TILE_SIZE * 2 + 20, Colors.darkGreen);
+    print("WIN", WIDTH - 40, TILE_SIZE * 2 + 4, Colors.white);
   }
   if (States.levelLostShot) {
-    rectFill(4, TILE_SIZE * 2, 92, TILE_SIZE * 2 + 56, Colors.darkRed);
+    rectFill(4, TILE_SIZE * 2, 92, TILE_SIZE * 2 + 30, Colors.darkRed);
     print("YOU GOT", 4, TILE_SIZE * 2 + 4, Colors.white);
     print("SHOT", 4, TILE_SIZE * 3 + 4, Colors.white);
     line(
@@ -853,6 +862,7 @@ function drawGame() {
       deathShot[1].y + board.y,
       Colors.darkRed
     );
+    print("final score", 4, TILE_SIZE * 5, Colors.white)
   }
   print(totalScore/10, 4, TILE_SIZE * 6, Colors.white)
   drawScoreFloaties();

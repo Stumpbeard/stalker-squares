@@ -1,6 +1,7 @@
 known bugs:
 resizing text below 8 blurs it
 if more walls need to be created than pieces were removed you freeze
+game breaks if you score pieces on winning turn
 
 credit:
 sfx: https://jdwasabi.itch.io/8-bit-16-bit-sound-effects-pack
@@ -57,3 +58,4 @@ sfx: https://jdwasabi.itch.io/8-bit-16-bit-sound-effects-pack
 2. Transition to level up screen from win
 
 1. Add loop from game <> level up
+2. Add information about total score, lose state
