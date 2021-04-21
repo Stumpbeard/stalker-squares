@@ -42,7 +42,7 @@ function _init() {
   totalScore = 0;
   bunkerSpawnTarget = 200;
   pieceHoldLimit = 4;
-  blowoutCounter = 16;
+  blowoutCounter = 20;
   banditMod = 0;
   bunkerMod = 0;
   blowoutMod = 0;
@@ -64,7 +64,7 @@ function _init() {
   scoreFloaties = [];
   playerStrobe = 0;
   blowoutWidth = -2;
-  playerIcon = {x: 0, y: 0}
+  playerIcon = undefined
 }
 
 function _update() {
@@ -350,8 +350,8 @@ function replacePieces() {
     }
   }
 
-  let newWalls = Math.floor(bunkerSpawnScore / bunkerSpawnTarget);
-  bunkerSpawnScore = bunkerSpawnScore % bunkerSpawnTarget;
+  let newWalls = Math.floor(bunkerSpawnScore / (bunkerSpawnTarget + bunkerMod));
+  bunkerSpawnScore = bunkerSpawnScore % (bunkerSpawnTarget + bunkerMod);
 
   if (newWalls > 0) {
     sfx(3);
@@ -432,12 +432,12 @@ function drawBunkerBar(x, y) {
   rectFill(
     x + 1,
     y + 1,
-    x + 1 + Math.floor(((95 - 1) / bunkerSpawnTarget) * bunkerSpawnScore),
+    x + 1 + Math.floor(((95 - 1) / (bunkerSpawnTarget + bunkerMod)) * bunkerSpawnScore),
     y + 16 - 1,
     Colors.darkGreen
   );
   print(
-    `${bunkerSpawnScore / 10} / ${bunkerSpawnTarget / 10}`,
+    `${bunkerSpawnScore / 10} / ${(bunkerSpawnTarget + bunkerMod) / 10}`,
     x + 4,
     y + 4,
     Colors.white
@@ -761,20 +761,22 @@ function drawLevelUp() {
   if (blowoutWidth >= WIDTH || States.levelUpChosen) {
     print("make worse:", 4, TILE_SIZE, Colors.white)
     print("bandits- " + banditMod, 4, TILE_SIZE * 2, Colors.white)
-    print("bunkers- " + bunkerMod, 4, TILE_SIZE * 3, Colors.white)
+    print("bunkers- " + bunkerMod/100, 4, TILE_SIZE * 3, Colors.white)
     print("blowout- " + blowoutMod, 4, TILE_SIZE * 4, Colors.white)
   }
   print(totalScore/10, 4, TILE_SIZE * 6, Colors.white)
-  rectFill(playerIcon.x - TILE_SIZE - 1, playerIcon.y - TILE_SIZE - 1, playerIcon.x + TILE_SIZE * 2 + 1, playerIcon.y + TILE_SIZE * 2 + 1, "black")
-  spr(7, playerIcon.x - 16, playerIcon.y - 16)
-  spr(7, playerIcon.x, playerIcon.y - 16)
-  spr(7, playerIcon.x + 16, playerIcon.y - 16)
-  spr(7, playerIcon.x - 16, playerIcon.y)
-  spr(0, playerIcon.x, playerIcon.y)
-  spr(7, playerIcon.x + 16, playerIcon.y)
-  spr(7, playerIcon.x - 16, playerIcon.y + 16)
-  spr(7, playerIcon.x, playerIcon.y + 16)
-  spr(7, playerIcon.x + 16, playerIcon.y + 16)
+  if (playerIcon) {
+    rectFill(playerIcon.x - TILE_SIZE - 1, playerIcon.y - TILE_SIZE - 1, playerIcon.x + TILE_SIZE * 2 + 1, playerIcon.y + TILE_SIZE * 2 + 1, "black")
+    spr(7, playerIcon.x - 16, playerIcon.y - 16)
+    spr(7, playerIcon.x, playerIcon.y - 16)
+    spr(7, playerIcon.x + 16, playerIcon.y - 16)
+    spr(7, playerIcon.x - 16, playerIcon.y)
+    spr(0, playerIcon.x, playerIcon.y)
+    spr(7, playerIcon.x + 16, playerIcon.y)
+    spr(7, playerIcon.x - 16, playerIcon.y + 16)
+    spr(7, playerIcon.x, playerIcon.y + 16)
+    spr(7, playerIcon.x + 16, playerIcon.y + 16)
+  }
 }
 
 function updateLevelUp() {
@@ -782,6 +784,15 @@ function updateLevelUp() {
     blowoutWidth = Math.min(blowoutWidth + 2, WIDTH)
   } else {
     blowoutWidth = Math.max(blowoutWidth - 4, 0)
+    if (blowoutWidth === 0) {
+      States.levelUpScreen = false
+      States.gameScreen = true
+      States.playerControl = true
+      States.levelUpChosen = false
+      bunkerSpawnScore = 0
+      resetBlowoutCounter()
+      return
+    }
   }
   
   let m = mouse();
@@ -791,11 +802,16 @@ function updateLevelUp() {
       banditMod += 1
       States.levelUpChosen = true
     } else if (isColliding(mouseBox, {x: 0, y: TILE_SIZE * 3, w: WIDTH, h: TILE_SIZE})) {
-      bunkerMod += 1
+      bunkerMod += 100
       States.levelUpChosen = true
     } else if (isColliding(mouseBox, {x: 0, y: TILE_SIZE * 4, w: WIDTH, h: TILE_SIZE})) {
       blowoutMod += 1
       States.levelUpChosen = true
+    }
+    if (States.levelUpChosen) {
+      board = newBoard(board.x, board.y)
+      playerIcon = undefined
+      States.levelWon = false
     }
   }
 }
@@ -980,4 +996,8 @@ function findPlayer() {
       }
     }
   }
+}
+
+function resetBlowoutCounter() {
+  blowoutCounter = 20 - blowoutMod * 2
 }

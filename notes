@@ -1,5 +1,6 @@
 known bugs:
 resizing text below 8 blurs it
+if more walls need to be created than pieces were removed you freeze
 
 credit:
 sfx: https://jdwasabi.itch.io/8-bit-16-bit-sound-effects-pack
@@ -54,3 +55,5 @@ sfx: https://jdwasabi.itch.io/8-bit-16-bit-sound-effects-pack
 1 hour
 1. Add level up screen
 2. Transition to level up screen from win
+
+1. Add loop from game <> level up
