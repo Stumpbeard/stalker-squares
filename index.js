@@ -8,7 +8,7 @@ const Colors = {
 };
 
 function _init() {
-  inputTimer = 30
+  inputTimer = 30;
   States = {
     inited: false,
     playerControl: false,
@@ -24,9 +24,9 @@ function _init() {
     levelUpChosen: false,
     firstSwap: false,
   };
-  highScore = undefined
+  highScore = undefined;
   if (localStorage.getItem("highScore")) {
-    highScore = Number(localStorage.getItem("highScore"))
+    highScore = Number(localStorage.getItem("highScore"));
   }
   deathShot = undefined;
   tutorialMan = {
@@ -68,7 +68,7 @@ function _init() {
   scoreFloaties = [];
   playerStrobe = 0;
   blowoutWidth = -2;
-  playerIcon = undefined
+  playerIcon = undefined;
 }
 
 function _update() {
@@ -436,7 +436,11 @@ function drawBunkerBar(x, y) {
   rectFill(
     x + 1,
     y + 1,
-    x + 1 + Math.floor(((95 - 1) / (bunkerSpawnTarget + bunkerMod)) * bunkerSpawnScore),
+    x +
+      1 +
+      Math.floor(
+        ((95 - 1) / (bunkerSpawnTarget + bunkerMod)) * bunkerSpawnScore
+      ),
     y + 16 - 1,
     Colors.darkGreen
   );
@@ -610,8 +614,8 @@ function arePiecesColliding(piece1, piece2) {
 function updateGame() {
   let m = mouse();
   if ((States.levelLost || States.levelLostShot) && m.mouse1) {
-    _init()
-    sfx(0)
+    _init();
+    sfx(0);
     return;
   }
   playerStrobe += 1 / 3;
@@ -619,7 +623,7 @@ function updateGame() {
     if (!heldPiece.piece) {
       unfreshenPieces();
     }
-    
+
     m.x -= board.x;
     m.y -= board.y;
     m.x = Math.max(0, Math.min(m.x, board.pieces[0].length * TILE_SIZE - 1));
@@ -699,11 +703,11 @@ function updateGame() {
           removeComboPieces(combos);
           States.loweringCurrentPieces = true;
         } else if (winStateExists()) {
-          winLevel()
+          winLevel();
         } else if (blowoutCounter <= 0) {
           sfx(5);
           States.levelLost = true;
-          updateHighScore()
+          updateHighScore();
           States.playerControl = false;
         }
 
@@ -743,10 +747,10 @@ function updateGame() {
       } else {
         States.spawningNewPieces = false;
         if (winStateExists()) {
-          winLevel()
+          winLevel();
         } else if (blowoutCounter <= 0) {
           States.levelLost = true;
-          updateHighScore()
+          updateHighScore();
         } else {
           States.playerControl = true;
           checkBanditLoseState();
@@ -759,73 +763,85 @@ function updateGame() {
 
 function drawLevelUp() {
   if (!States.levelUpChosen) {
-    drawGame()
+    drawGame();
   }
-  
-  rectFill(0, 0, blowoutWidth, HEIGHT, Colors.darkGreen)
+
+  rectFill(0, 0, blowoutWidth, HEIGHT, Colors.darkGreen);
   if (blowoutWidth >= WIDTH || States.levelUpChosen) {
-    print("make worse:", 4, TILE_SIZE, Colors.white)
+    print("make worse:", 4, TILE_SIZE, Colors.white);
 
-    print("bandits- " + banditMod, 4, TILE_SIZE * 2, Colors.white)
-    rect(2, TILE_SIZE * 2 - 3, WIDTH - 3, TILE_SIZE * 2.5 + 2, Colors.white)
+    print("bandits- " + banditMod, 4, TILE_SIZE * 2, Colors.white);
+    rect(2, TILE_SIZE * 2 - 3, WIDTH - 3, TILE_SIZE * 2.5 + 2, Colors.white);
 
-    print("bunkers- " + bunkerMod/100, 4, TILE_SIZE * 3, Colors.white)
-    rect(2, TILE_SIZE * 3 - 3, WIDTH - 3, TILE_SIZE * 3.5 + 2, Colors.white)
+    print("bunkers- " + bunkerMod / 100, 4, TILE_SIZE * 3, Colors.white);
+    rect(2, TILE_SIZE * 3 - 3, WIDTH - 3, TILE_SIZE * 3.5 + 2, Colors.white);
 
-    print("blowout- " + blowoutMod, 4, TILE_SIZE * 4, Colors.white)
-    rect(2, TILE_SIZE * 4 - 3, WIDTH - 3, TILE_SIZE * 4.5 + 2, Colors.white)
+    print("blowout- " + blowoutMod, 4, TILE_SIZE * 4, Colors.white);
+    rect(2, TILE_SIZE * 4 - 3, WIDTH - 3, TILE_SIZE * 4.5 + 2, Colors.white);
 
-    print("score:", 4, TILE_SIZE * 5, Colors.white)
+    print("score:", 4, TILE_SIZE * 5, Colors.white);
   }
-  print(totalScore/10, 4, TILE_SIZE * 6, Colors.white)
+  print(totalScore / 10, 4, TILE_SIZE * 6, Colors.white);
   if (playerIcon) {
-    rectFill(playerIcon.x - TILE_SIZE - 1, playerIcon.y - TILE_SIZE - 1, playerIcon.x + TILE_SIZE * 2 + 1, playerIcon.y + TILE_SIZE * 2 + 1, "black")
-    spr(7, playerIcon.x - 16, playerIcon.y - 16)
-    spr(7, playerIcon.x, playerIcon.y - 16)
-    spr(7, playerIcon.x + 16, playerIcon.y - 16)
-    spr(7, playerIcon.x - 16, playerIcon.y)
-    spr(0, playerIcon.x, playerIcon.y)
-    spr(7, playerIcon.x + 16, playerIcon.y)
-    spr(7, playerIcon.x - 16, playerIcon.y + 16)
-    spr(7, playerIcon.x, playerIcon.y + 16)
-    spr(7, playerIcon.x + 16, playerIcon.y + 16)
+    rectFill(
+      playerIcon.x - TILE_SIZE - 1,
+      playerIcon.y - TILE_SIZE - 1,
+      playerIcon.x + TILE_SIZE * 2 + 1,
+      playerIcon.y + TILE_SIZE * 2 + 1,
+      "black"
+    );
+    spr(7, playerIcon.x - 16, playerIcon.y - 16);
+    spr(7, playerIcon.x, playerIcon.y - 16);
+    spr(7, playerIcon.x + 16, playerIcon.y - 16);
+    spr(7, playerIcon.x - 16, playerIcon.y);
+    spr(0, playerIcon.x, playerIcon.y);
+    spr(7, playerIcon.x + 16, playerIcon.y);
+    spr(7, playerIcon.x - 16, playerIcon.y + 16);
+    spr(7, playerIcon.x, playerIcon.y + 16);
+    spr(7, playerIcon.x + 16, playerIcon.y + 16);
   }
 }
 
 function updateLevelUp() {
   if (!States.levelUpChosen) {
-    blowoutWidth = Math.min(blowoutWidth + 2, WIDTH)
+    blowoutWidth = Math.min(blowoutWidth + 2, WIDTH);
   } else {
-    blowoutWidth = Math.max(blowoutWidth - 4, 0)
+    blowoutWidth = Math.max(blowoutWidth - 4, 0);
     if (blowoutWidth === 0) {
-      States.levelUpScreen = false
-      States.gameScreen = true
-      States.playerControl = true
-      States.levelUpChosen = false
-      bunkerSpawnScore = 0
-      resetBlowoutCounter()
-      return
+      States.levelUpScreen = false;
+      States.gameScreen = true;
+      States.playerControl = true;
+      States.levelUpChosen = false;
+      bunkerSpawnScore = 0;
+      resetBlowoutCounter();
+      return;
     }
   }
-  
+
   let m = mouse();
   if (m.mouse1 && blowoutWidth >= WIDTH) {
-    let mouseBox = {x: m.x, y: m.y, w: 1, h: 1}
-    if (isColliding(mouseBox, {x: 0, y: TILE_SIZE * 2, w: WIDTH, h: TILE_SIZE})) {
-      banditMod += 1
-      States.levelUpChosen = true
-    } else if (isColliding(mouseBox, {x: 0, y: TILE_SIZE * 3, w: WIDTH, h: TILE_SIZE})) {
-      bunkerMod += 100
-      States.levelUpChosen = true
-    } else if (isColliding(mouseBox, {x: 0, y: TILE_SIZE * 4, w: WIDTH, h: TILE_SIZE})) {
-      blowoutMod += 1
-      States.levelUpChosen = true
+    let mouseBox = { x: m.x, y: m.y, w: 1, h: 1 };
+    if (
+      isColliding(mouseBox, { x: 0, y: TILE_SIZE * 2, w: WIDTH, h: TILE_SIZE })
+    ) {
+      banditMod += 1;
+      States.levelUpChosen = true;
+    } else if (
+      isColliding(mouseBox, { x: 0, y: TILE_SIZE * 3, w: WIDTH, h: TILE_SIZE })
+    ) {
+      bunkerMod += 100;
+      States.levelUpChosen = true;
+    } else if (
+      isColliding(mouseBox, { x: 0, y: TILE_SIZE * 4, w: WIDTH, h: TILE_SIZE })
+    ) {
+      blowoutMod += 1;
+      States.levelUpChosen = true;
     }
     if (States.levelUpChosen) {
-      board = newBoard(board.x, board.y)
-      playerIcon = undefined
-      States.levelWon = false
-      sfx(0)
+      board = newBoard(board.x, board.y);
+      playerIcon = undefined;
+      States.levelWon = false;
+      sfx(0);
     }
   }
 }
@@ -851,7 +867,7 @@ function drawGame() {
     rectFill(4, TILE_SIZE * 2, 92, TILE_SIZE * 2 + 30, Colors.darkRed);
     print("BLOWOUT", 4, TILE_SIZE * 2 + 4, Colors.white);
     print("YOU LOSE", 4, TILE_SIZE * 3 + 4, Colors.white);
-    print("final score", 4, TILE_SIZE * 5, Colors.white)
+    print("final score", 4, TILE_SIZE * 5, Colors.white);
   }
   if (States.levelWon) {
     rectFill(4, TILE_SIZE * 2, 92, TILE_SIZE * 2 + 20, Colors.darkGreen);
@@ -868,9 +884,9 @@ function drawGame() {
       deathShot[1].y + board.y,
       Colors.darkRed
     );
-    print("final score", 4, TILE_SIZE * 5, Colors.white)
+    print("final score", 4, TILE_SIZE * 5, Colors.white);
   }
-  print(totalScore/10, 4, TILE_SIZE * 6, Colors.white)
+  print(totalScore / 10, 4, TILE_SIZE * 6, Colors.white);
   drawScoreFloaties();
   drawHoldTimer();
 }
@@ -932,13 +948,13 @@ function drawTutorial() {
   spr(7, TILE_SIZE * 2 + 20, TILE_SIZE * 8 + 10 + shiftY);
   spr(7, TILE_SIZE * 2 + 36, TILE_SIZE * 8 + 10 + shiftY);
   if (highScore) {
-    print("high score", 0, HEIGHT - 22)
-    print(highScore/10, 0, HEIGHT - 10)  
+    print("high score", 0, HEIGHT - 22);
+    print(highScore / 10, 0, HEIGHT - 10);
   }
 }
 
 function updateTutorial() {
-  inputTimer = Math.max(inputTimer - 1, 0)
+  inputTimer = Math.max(inputTimer - 1, 0);
   tutorialMan.x += tutorialMan.spd;
   if (tutorialMan.x === TILE_SIZE * 4 && tutorialMan.spd === 1) {
     tutorialPiece1.x = TILE_SIZE * 3;
@@ -1003,7 +1019,7 @@ function checkBanditLoseState() {
   if (shots) {
     sfx(5);
     States.levelLostShot = true;
-    updateHighScore()
+    updateHighScore();
     States.playerControl = false;
   }
 }
@@ -1021,13 +1037,13 @@ function findPlayer() {
 }
 
 function resetBlowoutCounter() {
-  blowoutCounter = 20 - blowoutMod * 2
+  blowoutCounter = 20 - blowoutMod * 2;
 }
 
 function updateHighScore() {
-  console.log("updating high score")
+  console.log("updating high score");
   if (highScore == undefined || totalScore > highScore) {
-    window.localStorage.setItem("highScore", totalScore)
+    window.localStorage.setItem("highScore", totalScore);
   }
 }
 
@@ -1037,6 +1053,9 @@ function winLevel() {
   sfx(6);
   States.gameScreen = false;
   States.levelUpScreen = true;
-  let playerLoc = findPlayer()
-  playerIcon = {x: board.x + playerLoc[0] * TILE_SIZE, y: board.y + playerLoc[1] * TILE_SIZE}
+  let playerLoc = findPlayer();
+  playerIcon = {
+    x: board.x + playerLoc[0] * TILE_SIZE,
+    y: board.y + playerLoc[1] * TILE_SIZE,
+  };
 }
