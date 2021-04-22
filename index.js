@@ -1,19 +1,3 @@
-const States = {
-  inited: false,
-  playerControl: false,
-  pieceHeld: false,
-  loweringCurrentPieces: false,
-  spawningNewPieces: false,
-  levelWon: false,
-  levelLost: false,
-  levelLostShot: false,
-  tutorialScreen: true,
-  gameScreen: false,
-  levelUpScreen: false,
-  levelUpChosen: false,
-  firstSwap: false,
-};
-
 const Colors = {
   darkRed: "#ac3232",
   lightRed: "#d95763",
@@ -24,6 +8,26 @@ const Colors = {
 };
 
 function _init() {
+  inputTimer = 30
+  States = {
+    inited: false,
+    playerControl: false,
+    pieceHeld: false,
+    loweringCurrentPieces: false,
+    spawningNewPieces: false,
+    levelWon: false,
+    levelLost: false,
+    levelLostShot: false,
+    tutorialScreen: true,
+    gameScreen: false,
+    levelUpScreen: false,
+    levelUpChosen: false,
+    firstSwap: false,
+  };
+  highScore = undefined
+  if (localStorage.getItem("highScore")) {
+    highScore = Number(localStorage.getItem("highScore"))
+  }
   deathShot = undefined;
   tutorialMan = {
     x: TILE_SIZE * 3,
@@ -604,12 +608,18 @@ function arePiecesColliding(piece1, piece2) {
 }
 
 function updateGame() {
+  let m = mouse();
+  if ((States.levelLost || States.levelLostShot) && m.mouse1) {
+    _init()
+    sfx(0)
+    return;
+  }
   playerStrobe += 1 / 3;
   if (States.playerControl) {
     if (!heldPiece.piece) {
       unfreshenPieces();
     }
-    let m = mouse();
+    
     m.x -= board.x;
     m.y -= board.y;
     m.x = Math.max(0, Math.min(m.x, board.pieces[0].length * TILE_SIZE - 1));
@@ -689,16 +699,11 @@ function updateGame() {
           removeComboPieces(combos);
           States.loweringCurrentPieces = true;
         } else if (winStateExists()) {
-          States.levelWon = true;
-          States.playerControl = false;
-          sfx(6);
-          States.gameScreen = false;
-          States.levelUpScreen = true;
-          let playerLoc = findPlayer()
-          playerIcon = {x: board.x + playerLoc[0] * TILE_SIZE, y: board.y + playerLoc[1] * TILE_SIZE}
+          winLevel()
         } else if (blowoutCounter <= 0) {
           sfx(5);
           States.levelLost = true;
+          updateHighScore()
           States.playerControl = false;
         }
 
@@ -738,10 +743,10 @@ function updateGame() {
       } else {
         States.spawningNewPieces = false;
         if (winStateExists()) {
-          console.log("setting win state");
-          States.levelWon = true;
+          winLevel()
         } else if (blowoutCounter <= 0) {
           States.levelLost = true;
+          updateHighScore()
         } else {
           States.playerControl = true;
           checkBanditLoseState();
@@ -820,6 +825,7 @@ function updateLevelUp() {
       board = newBoard(board.x, board.y)
       playerIcon = undefined
       States.levelWon = false
+      sfx(0)
     }
   }
 }
@@ -925,9 +931,14 @@ function drawTutorial() {
   spr(7, TILE_SIZE * 2 + 4, TILE_SIZE * 8 + 10 + shiftY);
   spr(7, TILE_SIZE * 2 + 20, TILE_SIZE * 8 + 10 + shiftY);
   spr(7, TILE_SIZE * 2 + 36, TILE_SIZE * 8 + 10 + shiftY);
+  if (highScore) {
+    print("high score", 0, HEIGHT - 22)
+    print(highScore/10, 0, HEIGHT - 10)  
+  }
 }
 
 function updateTutorial() {
+  inputTimer = Math.max(inputTimer - 1, 0)
   tutorialMan.x += tutorialMan.spd;
   if (tutorialMan.x === TILE_SIZE * 4 && tutorialMan.spd === 1) {
     tutorialPiece1.x = TILE_SIZE * 3;
@@ -940,7 +951,7 @@ function updateTutorial() {
     tutorialPiece1.x = TILE_SIZE * 4;
     tutorialMan.spd = 1;
   }
-  if (mouse().mouse1) {
+  if (mouse().mouse1 && inputTimer <= 0) {
     States.tutorialScreen = false;
     States.gameScreen = true;
     sfx(0);
@@ -992,6 +1003,7 @@ function checkBanditLoseState() {
   if (shots) {
     sfx(5);
     States.levelLostShot = true;
+    updateHighScore()
     States.playerControl = false;
   }
 }
@@ -1010,4 +1022,21 @@ function findPlayer() {
 
 function resetBlowoutCounter() {
   blowoutCounter = 20 - blowoutMod * 2
+}
+
+function updateHighScore() {
+  console.log("updating high score")
+  if (highScore == undefined || totalScore > highScore) {
+    window.localStorage.setItem("highScore", totalScore)
+  }
+}
+
+function winLevel() {
+  States.levelWon = true;
+  States.playerControl = false;
+  sfx(6);
+  States.gameScreen = false;
+  States.levelUpScreen = true;
+  let playerLoc = findPlayer()
+  playerIcon = {x: board.x + playerLoc[0] * TILE_SIZE, y: board.y + playerLoc[1] * TILE_SIZE}
 }
