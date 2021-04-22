@@ -1,27 +1,27 @@
-const cacheName = "bbb-v1";
+const cacheName = "bbb-v2";
 const contentToCache = [
   "/",
-  "/index.html",
-  "/index.js",
-  "/engine.js",
-  "/sw.js",
-  "/font.png",
-  "/guy.jpeg",
-  "/guy.png",
-  "/icon.png",
-  "/icon-192.png",
-  "/icon-512.png",
-  "/manifest.json",
-  "/spritesheet.png",
-  "/style.css",
-  "/sound/combo.wav",
-  "/sound/confirm.wav",
-  "/sound/enemy.wav",
-  "/sound/lose.wav",
-  "/sound/lose2.wav",
-  "/sound/select.wav",
-  "/sound/switch.wav",
-  "/sound/win.wav",
+  "index.html",
+  "index.js",
+  "engine.js",
+  "sw.js",
+  "font.png",
+  "guy.jpeg",
+  "guy.png",
+  "icon.png",
+  "icon-192.png",
+  "icon-512.png",
+  "manifest.json",
+  "spritesheet.png",
+  "style.css",
+  "sound/combo.wav",
+  "sound/confirm.wav",
+  "sound/enemy.wav",
+  "sound/lose.wav",
+  "sound/lose2.wav",
+  "sound/select.wav",
+  "sound/switch.wav",
+  "sound/win.wav",
 ];
 
 if ("serviceWorker" in navigator) {
@@ -29,7 +29,6 @@ if ("serviceWorker" in navigator) {
 }
 
 self.addEventListener("install", (e) => {
-  console.log("[Service Worker] Install");
   e.waitUntil(
     (async () => {
       const cache = await caches.open(cacheName);
