@@ -25,7 +25,7 @@ const contentToCache = [
 ];
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("./pwa-examples/js13kpwa/sw.js");
+  navigator.serviceWorker.register("./sw.js");
 }
 
 self.addEventListener("install", (e) => {
