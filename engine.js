@@ -110,7 +110,7 @@ function sfx(n) {
   if (n >= SOUNDS.length) {
     return;
   }
-  let sound = new Audio(SOUNDS[n].src);
+  let sound = SOUNDS[n].cloneNode();
   sound.play();
   sound.addEventListener("ended", (e) => {
     delete e.target;

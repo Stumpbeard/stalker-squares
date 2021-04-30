@@ -1,4 +1,4 @@
-const cacheName = "bbb-v7";
+const cacheName = "bbb-v8";
 const contentToCache = [
   "/",
   "index.html",
