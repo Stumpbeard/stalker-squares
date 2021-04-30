@@ -1093,7 +1093,6 @@ function resetBlowoutCounter() {
 }
 
 function updateHighScore() {
-  console.log("updating high score");
   if (highScore == undefined || totalScore > highScore) {
     window.localStorage.setItem("highScore", totalScore);
   }

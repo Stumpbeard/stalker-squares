@@ -108,7 +108,6 @@ function spr(i, x, y) {
 
 function sfx(n) {
   if (n >= SOUNDS.length) {
-    console.log("Sound does not exist.");
     return;
   }
   let sound = new Audio(SOUNDS[n].src);
@@ -187,8 +186,22 @@ canvas.addEventListener(
 canvas.addEventListener(
   "touchstart",
   (event) => {
-    console.log("touchstart");
-    mouseData.mouse1 = true;
+    let touch = event.touches[0];
+    let x = Math.floor(
+      (WIDTH / canvas.scrollWidth) * (touch.clientX - canvas.offsetLeft)
+    );
+    let y = Math.floor(
+      (HEIGHT / canvas.scrollHeight) * (touch.clientY - canvas.offsetTop)
+    );
+    const pos = {
+      x: x,
+      y: y,
+      mouse1: true,
+      xDiff: x - mouseData.x,
+      yDiff: y - mouseData.y,
+    };
+
+    mouseData = pos;
   },
   false
 );
@@ -196,7 +209,6 @@ canvas.addEventListener(
 canvas.addEventListener(
   "touchend",
   (event) => {
-    console.log("touchend");
     mouseData.mouse1 = false;
   },
   false
@@ -227,7 +239,6 @@ document.addEventListener(
 document.addEventListener(
   "touchmove",
   (event) => {
-    console.log("touchmove");
     let x = Math.floor(
       (WIDTH / canvas.scrollWidth) *
         (event.touches[0].pageX - canvas.offsetLeft)
