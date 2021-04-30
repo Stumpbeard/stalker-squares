@@ -9,6 +9,11 @@ const Colors = {
 
 function _init() {
   inputTimer = 30;
+  if (window.localStorage.getItem("banditsOn")) {
+    banditsOn = window.localStorage.getItem("banditsOn") === "true";
+  } else {
+    banditsOn = true;
+  }
   States = {
     inited: false,
     playerControl: false,
@@ -23,6 +28,7 @@ function _init() {
     levelUpScreen: false,
     levelUpChosen: false,
     firstSwap: false,
+    banditsOn: banditsOn,
   };
   highScore = undefined;
   if (localStorage.getItem("highScore")) {
@@ -69,6 +75,7 @@ function _init() {
   playerStrobe = 0;
   blowoutWidth = -2;
   playerIcon = undefined;
+  banditToggleCooldown = 0;
 }
 
 function _update() {
@@ -494,6 +501,9 @@ function winStateExists() {
 }
 
 function tryForBandit(piece) {
+  if (!States.banditsOn) {
+    return;
+  }
   const chance = 16 - wallPieces - banditMod;
   const roll = Math.floor(Math.random() * chance);
   if (roll <= 0) {
@@ -613,9 +623,26 @@ function arePiecesColliding(piece1, piece2) {
 
 function updateGame() {
   let m = mouse();
+
+  if (banditToggleCooldown > 0) {
+    banditToggleCooldown -= 1;
+  }
   if ((States.levelLost || States.levelLostShot) && m.mouse1) {
-    _init();
-    sfx(0);
+    if (
+      isColliding(
+        { x: m.x, y: m.y, w: 2, h: 2 },
+        { x: 4 * TILE_SIZE, y: 4 * TILE_SIZE, w: TILE_SIZE * 2, h: TILE_SIZE }
+      )
+    ) {
+      if (banditToggleCooldown <= 0) {
+        States.banditsOn = !States.banditsOn;
+        window.localStorage.setItem("banditsOn", States.banditsOn);
+        banditToggleCooldown = FRAME_CAP / 3;
+      }
+    } else {
+      _init();
+      sfx(0);
+    }
     return;
   }
   playerStrobe += 1 / 3;
@@ -770,8 +797,10 @@ function drawLevelUp() {
   if (blowoutWidth >= WIDTH || States.levelUpChosen) {
     print("make worse:", 4, TILE_SIZE, Colors.white);
 
-    print("bandits- " + banditMod, 4, TILE_SIZE * 2, Colors.white);
-    rect(2, TILE_SIZE * 2 - 3, WIDTH - 3, TILE_SIZE * 2.5 + 2, Colors.white);
+    if (States.banditsOn) {
+      print("bandits- " + banditMod, 4, TILE_SIZE * 2, Colors.white);
+      rect(2, TILE_SIZE * 2 - 3, WIDTH - 3, TILE_SIZE * 2.5 + 2, Colors.white);
+    }
 
     print("bunkers- " + bunkerMod / 100, 4, TILE_SIZE * 3, Colors.white);
     rect(2, TILE_SIZE * 3 - 3, WIDTH - 3, TILE_SIZE * 3.5 + 2, Colors.white);
@@ -822,7 +851,13 @@ function updateLevelUp() {
   if (m.mouse1 && blowoutWidth >= WIDTH) {
     let mouseBox = { x: m.x, y: m.y, w: 1, h: 1 };
     if (
-      isColliding(mouseBox, { x: 0, y: TILE_SIZE * 2, w: WIDTH, h: TILE_SIZE })
+      isColliding(mouseBox, {
+        x: 0,
+        y: TILE_SIZE * 2,
+        w: WIDTH,
+        h: TILE_SIZE,
+      }) &&
+      States.banditsOn
     ) {
       banditMod += 1;
       States.levelUpChosen = true;
@@ -869,6 +904,14 @@ function drawGame() {
     print("BLOWOUT", 4, TILE_SIZE * 2 + 4, Colors.white);
     print("YOU LOSE", 4, TILE_SIZE * 3 + 4, Colors.white);
     print("final score", 4, TILE_SIZE * 5, Colors.white);
+    if (States.banditsOn) {
+      spr(8, 3 * TILE_SIZE, 4 * TILE_SIZE);
+      spr(14, 4 * TILE_SIZE, 4 * TILE_SIZE);
+      spr(15, 5 * TILE_SIZE, 4 * TILE_SIZE);
+    } else {
+      spr(12, 4 * TILE_SIZE, 4 * TILE_SIZE);
+      spr(13, 5 * TILE_SIZE, 4 * TILE_SIZE);
+    }
   }
   if (States.levelWon) {
     rectFill(4, TILE_SIZE * 2, 92, TILE_SIZE * 2 + 20, Colors.darkGreen);
@@ -885,6 +928,14 @@ function drawGame() {
       deathShot[1].y + board.y,
       Colors.darkRed
     );
+    if (States.banditsOn) {
+      spr(8, 3 * TILE_SIZE, 4 * TILE_SIZE);
+      spr(14, 4 * TILE_SIZE, 4 * TILE_SIZE);
+      spr(15, 5 * TILE_SIZE, 4 * TILE_SIZE);
+    } else {
+      spr(12, 4 * TILE_SIZE, 4 * TILE_SIZE);
+      spr(13, 5 * TILE_SIZE, 4 * TILE_SIZE);
+    }
     print("final score", 4, TILE_SIZE * 5, Colors.white);
   }
   print(totalScore / 10, 4, TILE_SIZE * 6, Colors.white);
