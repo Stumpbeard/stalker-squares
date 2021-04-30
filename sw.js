@@ -1,4 +1,4 @@
-const cacheName = "bbb-v6";
+const cacheName = "bbb-v7";
 const contentToCache = [
   "/",
   "index.html",
@@ -14,14 +14,14 @@ const contentToCache = [
   "manifest.json",
   "spritesheet.png",
   "style.css",
-  "sound/combo.wav",
-  "sound/confirm.wav",
-  "sound/enemy.wav",
-  "sound/lose.wav",
-  "sound/lose2.wav",
-  "sound/select.wav",
-  "sound/switch.wav",
-  "sound/win.wav",
+  "sound/combo.mp3",
+  "sound/confirm.mp3",
+  "sound/enemy.mp3",
+  "sound/lose.mp3",
+  "sound/lose2.mp3",
+  "sound/select.mp3",
+  "sound/switch.mp3",
+  "sound/win.mp3",
 ];
 
 if ("serviceWorker" in navigator) {
