@@ -496,7 +496,7 @@ function winStateExists() {
 function tryForBandit(piece) {
   const chance = 16 - wallPieces - banditMod;
   const roll = Math.floor(Math.random() * chance);
-  if (roll === 0) {
+  if (roll <= 0) {
     piece.color = 8;
     sfx(4);
   }
@@ -841,6 +841,7 @@ function updateLevelUp() {
       board = newBoard(board.x, board.y);
       playerIcon = undefined;
       States.levelWon = false;
+      wallPieces = 0;
       sfx(0);
     }
   }
