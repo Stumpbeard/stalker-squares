@@ -23,7 +23,8 @@ function _init() {
     levelWon: false,
     levelLost: false,
     levelLostShot: false,
-    tutorialScreen: true,
+    titleScreen: true,
+    tutorialScreen: false,
     gameScreen: false,
     levelUpScreen: false,
     levelUpChosen: false,
@@ -57,7 +58,7 @@ function _init() {
   bunkerMod = 0;
   blowoutMod = 0;
   wallPieces = 0;
-  board = newBoard(0, TILE_SIZE * 7);
+  board = newBoard(0, TILE_SIZE * 6);
   heldPiece = {
     piece: undefined,
     lastX: 0,
@@ -85,6 +86,8 @@ function _update() {
     updateGame();
   } else if (States.levelUpScreen) {
     updateLevelUp();
+  } else if (States.titleScreen) {
+    updateTitle();
   }
 }
 
@@ -96,6 +99,8 @@ function _draw() {
     drawGame();
   } else if (States.levelUpScreen) {
     drawLevelUp();
+  } else if (States.titleScreen) {
+    drawTitle();
   }
 }
 
@@ -631,7 +636,7 @@ function updateGame() {
     if (
       isColliding(
         { x: m.x, y: m.y, w: 2, h: 2 },
-        { x: 4 * TILE_SIZE, y: 4 * TILE_SIZE, w: TILE_SIZE * 2, h: TILE_SIZE }
+        { x: 4 * TILE_SIZE, y: 3 * TILE_SIZE, w: TILE_SIZE * 2, h: TILE_SIZE }
       )
     ) {
       if (banditToggleCooldown <= 0) {
@@ -641,6 +646,8 @@ function updateGame() {
       }
     } else {
       _init();
+      States.titleScreen = false;
+      States.tutorialScreen = true;
       sfx(0);
     }
     return;
@@ -902,15 +909,15 @@ function drawGame() {
   } else {
     rectFill(4, TILE_SIZE * 2, 92, TILE_SIZE * 2 + 30, Colors.darkRed);
     print("BLOWOUT", 4, TILE_SIZE * 2 + 4, Colors.white);
-    print("YOU LOSE", 4, TILE_SIZE * 3 + 4, Colors.white);
-    print("final score", 4, TILE_SIZE * 5, Colors.white);
+    print("LOSE", 4, TILE_SIZE * 3 + 4, Colors.white);
+    print("final score", 4, TILE_SIZE * 4, Colors.white);
     if (States.banditsOn) {
-      spr(8, 3 * TILE_SIZE, 4 * TILE_SIZE);
-      spr(14, 4 * TILE_SIZE, 4 * TILE_SIZE);
-      spr(15, 5 * TILE_SIZE, 4 * TILE_SIZE);
+      spr(8, 3 * TILE_SIZE, 3 * TILE_SIZE);
+      spr(14, 4 * TILE_SIZE, 3 * TILE_SIZE);
+      spr(15, 5 * TILE_SIZE, 3 * TILE_SIZE);
     } else {
-      spr(12, 4 * TILE_SIZE, 4 * TILE_SIZE);
-      spr(13, 5 * TILE_SIZE, 4 * TILE_SIZE);
+      spr(12, 4 * TILE_SIZE, 3 * TILE_SIZE);
+      spr(13, 5 * TILE_SIZE, 3 * TILE_SIZE);
     }
   }
   if (States.levelWon) {
@@ -929,16 +936,16 @@ function drawGame() {
       Colors.darkRed
     );
     if (States.banditsOn) {
-      spr(8, 3 * TILE_SIZE, 4 * TILE_SIZE);
-      spr(14, 4 * TILE_SIZE, 4 * TILE_SIZE);
-      spr(15, 5 * TILE_SIZE, 4 * TILE_SIZE);
+      spr(8, 3 * TILE_SIZE, 3 * TILE_SIZE);
+      spr(14, 4 * TILE_SIZE, 3 * TILE_SIZE);
+      spr(15, 5 * TILE_SIZE, 3 * TILE_SIZE);
     } else {
-      spr(12, 4 * TILE_SIZE, 4 * TILE_SIZE);
-      spr(13, 5 * TILE_SIZE, 4 * TILE_SIZE);
+      spr(12, 4 * TILE_SIZE, 3 * TILE_SIZE);
+      spr(13, 5 * TILE_SIZE, 3 * TILE_SIZE);
     }
-    print("final score", 4, TILE_SIZE * 5, Colors.white);
+    print("final score", 4, TILE_SIZE * 4, Colors.white);
   }
-  print(totalScore / 10, 4, TILE_SIZE * 6, Colors.white);
+  print(totalScore / 10, 4, TILE_SIZE * 5, Colors.white);
   drawScoreFloaties();
   drawHoldTimer();
 }
@@ -1109,4 +1116,21 @@ function winLevel() {
     x: board.x + playerLoc[0] * TILE_SIZE,
     y: board.y + playerLoc[1] * TILE_SIZE,
   };
+}
+
+function drawTitle() {
+  spr(0, WIDTH / 2 - TILE_SIZE / 2, HEIGHT / 2 - TILE_SIZE / 2);
+  print("bandits", 4, HEIGHT - TILE_SIZE * 4 - 4);
+  print("bunkers", 4, HEIGHT - TILE_SIZE * 3 - 4);
+  print("&", 4, HEIGHT - TILE_SIZE * 2 - 4);
+  print("blowouts", 4, HEIGHT - TILE_SIZE - 4);
+}
+
+function updateTitle() {
+  inputTimer = Math.max(inputTimer - 1, 0);
+  if (mouse().mouse1 && inputTimer <= 0) {
+    States.tutorialScreen = true;
+    States.titleScreen = false;
+    inputTimer = 30;
+  }
 }
