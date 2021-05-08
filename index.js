@@ -7,6 +7,22 @@ const Colors = {
   darkGreen: "#6abe30",
 };
 
+const LevelNames = [
+  "first match",
+  "multi match",
+  "bandits",
+  "bunkers",
+  "surrounded",
+  "ipsum",
+  "lorem",
+  "dumbdumb",
+  "cats",
+  "butts",
+  "test",
+  "filler",
+  "help me",
+];
+
 function _init() {
   inputTimer = 30;
   if (window.localStorage.getItem("banditsOn")) {
@@ -27,6 +43,7 @@ function _init() {
     tutorialScreen: false,
     gameScreen: false,
     levelUpScreen: false,
+    levelSelectScreen: false,
     levelUpChosen: false,
     firstSwap: false,
     banditsOn: banditsOn,
@@ -77,6 +94,8 @@ function _init() {
   blowoutWidth = -2;
   playerIcon = undefined;
   banditToggleCooldown = 0;
+  levelSelectScroll = 0;
+  levelSelectlastY = undefined;
 }
 
 function _update() {
@@ -88,6 +107,8 @@ function _update() {
     updateLevelUp();
   } else if (States.titleScreen) {
     updateTitle();
+  } else if (States.levelSelectScreen) {
+    updateLevelSelect();
   }
 }
 
@@ -101,6 +122,8 @@ function _draw() {
     drawLevelUp();
   } else if (States.titleScreen) {
     drawTitle();
+  } else if (States.levelSelectScreen) {
+    drawLevelSelect();
   }
 }
 
@@ -1116,6 +1139,28 @@ function winLevel() {
     x: board.x + playerLoc[0] * TILE_SIZE,
     y: board.y + playerLoc[1] * TILE_SIZE,
   };
+}
+
+function drawLevelSelect() {
+  for (let i = 0; i < LevelNames.length; ++i) {
+    print(LevelNames[i], 4, 10 + TILE_SIZE * i + levelSelectScroll);
+  }
+}
+
+function updateLevelSelect() {
+  let m = mouse();
+  if (m.mouse1) {
+    let newMouseY = m.y;
+    if (levelSelectlastY !== undefined) {
+      let yDiff = newMouseY - levelSelectlastY;
+      levelSelectScroll = Math.min(0, levelSelectScroll + yDiff);
+      levelSelectlastY = newMouseY;
+    } else {
+      levelSelectlastY = newMouseY;
+    }
+  } else {
+    levelSelectlastY = undefined;
+  }
 }
 
 function drawTitle() {
